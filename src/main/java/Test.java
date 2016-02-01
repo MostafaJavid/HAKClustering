@@ -5,9 +5,7 @@
 
 import weka.clusterers.*;
 import weka.core.Instances;
-import weka.core.ManhattanDistance;
 import weka.core.SelectedTag;
-import weka.core.Utils;
 import weka.core.converters.ConverterUtils.DataSource;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
@@ -167,10 +165,26 @@ class ClusteringDemo {
 
     public void doHierarchical(String path) throws Exception {
         HierarchicalClusterer cl = new HierarchicalClusterer();
+        //cl.setNumClusters(DataSource.read(path).size()-1);
         cl.setNumClusters(3);
         cl.setDebug(true);
+        cl.setMaxIteration(50);
         //cl.setDistanceFunction(new ManhattanDistance());
-        cl.setLinkType(new SelectedTag("SINGLE",HierarchicalClusterer.TAGS_LINK_TYPE));
+        cl.setLinkType(new SelectedTag("CENTROID",HierarchicalClusterer.TAGS_LINK_TYPE));
+        doCluster(path, cl);
+
+    }
+
+    public void doHAK(String path) throws Exception {
+        HAKClusterer cl = new HAKClusterer();
+        //cl.setNumClusters(DataSource.read(path).size()-4);
+        cl.setNumClusters(3);
+        cl.setDebug(true);
+        cl.setMaxIteration(50);
+        //cl.setDistanceFunction(new ManhattanDistance());
+        cl.setLinkType(new SelectedTag("CENTROID",HierarchicalClusterer.TAGS_LINK_TYPE));
+        //cl.setSeed(3);
+        cl.setMinimumInstanceCount(5);
         doCluster(path, cl);
     }
 
@@ -227,6 +241,7 @@ class ClusteringDemo {
         //clusteringDemo.classToCluster(path);
         //clusteringDemo.doKMeans(path);
         clusteringDemo.doHierarchical(path);
+        //clusteringDemo.doHAK(path);
         //clusteringDemo.visualize(path);
         //clusteringDemo.visualizeClusterAssignments(path);
     }

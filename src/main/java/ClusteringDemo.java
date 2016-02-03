@@ -150,7 +150,7 @@ class ClusteringDemo {
         String plotName = vp.getName();
         JFrame jf = new JFrame("Weka Clusterer Visualize: " + plotName);
         jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        jf.setSize(500,400);
+        jf.setSize(500, 400);
         jf.getContentPane().setLayout(new BorderLayout());
         jf.getContentPane().add(vp, BorderLayout.CENTER);
         jf.setVisible(true);
@@ -159,7 +159,7 @@ class ClusteringDemo {
     public void doKMeans(String path) throws Exception {
         SimpleKMeans cl = new SimpleKMeans();
         cl.setNumClusters(3);
-        cl.setSeed(50);
+        cl.setSeed(10);
         doCluster(path, cl);
     }
 
@@ -170,7 +170,7 @@ class ClusteringDemo {
         cl.setDebug(true);
         cl.setMaxIteration(50);
         //cl.setDistanceFunction(new ManhattanDistance());
-        cl.setLinkType(new SelectedTag("CENTROID",HierarchicalClusterer.TAGS_LINK_TYPE));
+        cl.setLinkType(new SelectedTag("CENTROID", HierarchicalClusterer.TAGS_LINK_TYPE));
         doCluster(path, cl);
 
     }
@@ -182,13 +182,13 @@ class ClusteringDemo {
         cl.setDebug(true);
         cl.setMaxIteration(50);
         //cl.setDistanceFunction(new ManhattanDistance());
-        cl.setLinkType(new SelectedTag("CENTROID",HierarchicalClusterer.TAGS_LINK_TYPE));
+        cl.setLinkType(new SelectedTag("CENTROID", HierarchicalClusterer.TAGS_LINK_TYPE));
         //cl.setSeed(3);
         cl.setMinimumInstanceCount(5);
         doCluster(path, cl);
     }
 
-    private void doCluster(String filename,AbstractClusterer cl) throws Exception {
+    private void doCluster(String filename, AbstractClusterer cl) throws Exception {
         ClusterEvaluation eval;
         Instances data;
         String[] options;
@@ -218,6 +218,9 @@ class ClusteringDemo {
         eval.evaluateClusterer(data);
         System.out.println(eval.clusterResultsToString());
 
+        CustomClusters cc = new CustomClusters(dataClusterer, cl, 1);
+        System.out.println(cc.getResultString());
+
 
         // cross-validation for density based clusterers
         // NB: use MakeDensityBasedClusterer to turn any non-density clusterer
@@ -229,7 +232,6 @@ class ClusteringDemo {
 //        System.out.println("log-likelyhood: " + logLikelyhood);
     }
 
-
     /**
      * usage:
      * ClusteringDemo arff-file
@@ -239,8 +241,8 @@ class ClusteringDemo {
         ClusteringDemo clusteringDemo = new ClusteringDemo();
         //clusteringDemo.ClusterWithSimpleKMeans(path);
         //clusteringDemo.classToCluster(path);
-        //clusteringDemo.doKMeans(path);
-        clusteringDemo.doHierarchical(path);
+        clusteringDemo.doKMeans(path);
+        //clusteringDemo.doHierarchical(path);
         //clusteringDemo.doHAK(path);
         //clusteringDemo.visualize(path);
         //clusteringDemo.visualizeClusterAssignments(path);

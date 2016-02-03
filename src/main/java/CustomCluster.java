@@ -48,8 +48,9 @@ public class CustomCluster {
     }
 
     public double computeSigma(DistanceFunction m_DistanceFunction) {
-        if (sigma == -1)
-            sigma = computeDistance(m_DistanceFunction,getCentroid());
+        if (sigma == -1 ) {
+            sigma = computeDistance(m_DistanceFunction, getCentroid());
+        }
         return sigma;
     }
 
@@ -58,11 +59,12 @@ public class CustomCluster {
         for (Instance instance : instanceList) {
             result += Math.pow(m_DistanceFunction.distance(centroid, instance),2);
         }
-        return result / getInstanceList().length;
+         result /= getInstanceList().length;
+        return result;
     }
 
     public double computeInterClusterVariance(DistanceFunction m_DistanceFunction, Instance[] centroids){
-        if (interClusterVariance == -1) {
+        if (interClusterVariance == -1 ||  Double.isNaN(interClusterVariance)) {
             double result = 0;
             Instance myCentroid = getCentroid();
             for (Instance centroid : centroids) {

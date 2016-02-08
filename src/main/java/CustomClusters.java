@@ -4,6 +4,8 @@ import weka.clusterers.SimpleKMeans;
 import weka.core.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -14,9 +16,23 @@ public class CustomClusters {
     private AbstractClusterer clusterer;
     private int minimumInstanceCount;
     private List<CustomCluster> customClusterList;
-    private Instances instances;
+    private Instances centroids;
     private DistanceFunction m_DistanceFunction = new EuclideanDistance();
 
+    //////Props////////////////////////////////////////////////////////////
+    private List<CustomCluster> getCustomClusterList() {
+        return customClusterList;
+    }
+
+    public  CustomCluster[] getCustomClusterArray() {
+        return getCustomClusterList().toArray(new CustomCluster[0]);
+    }
+
+    public DistanceFunction getDistanceFunction() {
+        return m_DistanceFunction;
+    }
+
+    //////Constructor////////////////////////////////
     public CustomClusters(Instances data, AbstractClusterer clusterer, int minimumInstanceCount) {
         this.data = data;
         this.minimumInstanceCount = minimumInstanceCount;
@@ -39,6 +55,53 @@ public class CustomClusters {
             this.m_DistanceFunction.setInstances(simpleKMeans.getDistanceFunction().getInstances());
             this.customClusterList = computeClusters(simpleKMeans);
         }
+    }
+
+    ////////Methods/////////////////////////////////////////
+    private List<Instance> getCentroids() {
+        List<Instance> centroids = new ArrayList<Instance>();
+        for (CustomCluster customCluster : getCustomClusterList()) {
+            centroids.add(customCluster.getCentroid());
+        }
+        return centroids;
+    }
+
+    public static Instances convertToInstances(List<CustomCluster> list, Instances data) {
+        ArrayList<Attribute> attributes = new ArrayList<Attribute>();
+        for (int i = 0; i < data.numAttributes(); i++) {
+            attributes.add(data.attribute(i));
+        }
+        Instances centroids = new Instances("centroids", attributes, list.size());
+        for (CustomCluster cluster : list) {
+            centroids.add(cluster.getCentroid());
+        }
+        return centroids;
+    }
+
+    private List<CustomCluster> sort(List<CustomCluster> list){
+        Collections.sort(list, new Comparator<CustomCluster>() {
+            @Override
+            public int compare(CustomCluster o1, CustomCluster o2) {
+                return o1.getClusterCount() > o2.getClusterCount() ? -1 : 1;
+            }
+        });
+        return list;
+    }
+
+    public void filterClusters(int maxClustersCount) {
+        customClusterList = sort(getCustomClusterList());
+        List<CustomCluster> result = new ArrayList<CustomCluster>();
+        for (int i = 0; i < maxClustersCount; i++) {
+            result.add(customClusterList.get(i));
+        }
+        customClusterList = result;
+    }
+
+    public Instances getCentroidsAsInstances() {
+        if (centroids == null) {
+            centroids = convertToInstances(getCustomClusterList(),data);
+        }
+        return centroids;
     }
 
     private List<CustomCluster> computeClusters(HierarchicalClusterer hierarchicalClusterer) {
@@ -81,6 +144,7 @@ public class CustomClusters {
         return result;
     }
 
+    //////////Evaluation/////////////////////////////////////////////////
     public double computeIntraClusterVariance() {
         List<CustomCluster> customClusters = getCustomClusterList();
         double result = 0;
@@ -125,48 +189,14 @@ public class CustomClusters {
         return result;
     }
 
-    private List<Instance> getCentroids() {
-        List<Instance> centroids = new ArrayList<Instance>();
-        for (CustomCluster customCluster : getCustomClusterList()) {
-            centroids.add(customCluster.getCentroid());
-        }
-        return centroids;
-    }
-
-    private Instances convertCentroidsToInstances(Instances data, List<CustomCluster> customClusters) {
-        ArrayList<Attribute> attributes = new ArrayList<Attribute>();
-        for (int i = 0; i < data.numAttributes(); i++) {
-            attributes.add(data.attribute(i));
-        }
-        Instances centroids = new Instances("centroids", attributes, customClusters.size());
-        for (CustomCluster cluster : customClusters) {
-            centroids.add(cluster.getCentroid());
-        }
-        return centroids;
-    }
-
-    private List<CustomCluster> getCustomClusterList() {
-        return customClusterList;
-    }
-
-    public CustomCluster[] getCustomClusterArray() {
-        return getCustomClusterList().toArray(new CustomCluster[0]);
-    }
-
-    public Instances getCentroidsAsInstances() {
-        if (instances == null)
-            instances = convertCentroidsToInstances(data, getCustomClusterList());
-        return instances;
-    }
-
-    public DistanceFunction getDistanceFunction() {
-        return m_DistanceFunction;
-    }
-
-
+    /////////Build Result String//////////////////////////////////////////////
     public String getResultString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("******************************************************************************").append("\n");
+        //sb.append("******************************************************************************").append("\n");
+        sb.append("centroids count:").append(getCustomClusterList().size()).append("\n");
+        for (CustomCluster customCluster : getCustomClusterList()) {
+            sb.append("size of cluster ").append(customCluster.getClusterId()).append(":").append(customCluster.getClusterCount()).append("\n");
+        }
         sb.append("intra cluster variance:").append(computeIntraClusterVariance()).append("\n");
         sb.append("inter cluster variance:").append(computeInterClusterVariance()).append("\n");
         sb.append("Fisher:").append(computeFisher()).append("\n");

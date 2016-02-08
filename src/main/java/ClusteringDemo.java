@@ -158,19 +158,19 @@ class ClusteringDemo {
 
     public void doKMeans(String path) throws Exception {
         SimpleKMeans cl = new SimpleKMeans();
-        cl.setNumClusters(3);
-        cl.setSeed(10);
+        cl.setNumClusters(clusterCount);
+        //cl.setSeed(10);
         doCluster(path, cl);
     }
 
     public void doHierarchical(String path) throws Exception {
         HierarchicalClusterer cl = new HierarchicalClusterer();
         //cl.setNumClusters(DataSource.read(path).size()-1);
-        cl.setNumClusters(3);
-        cl.setDebug(true);
-        cl.setMaxIteration(50);
+        cl.setNumClusters(clusterCount);
+        //cl.setDebug(true);
+        //cl.setMaxIteration(500);
         //cl.setDistanceFunction(new ManhattanDistance());
-        cl.setLinkType(new SelectedTag("CENTROID", HierarchicalClusterer.TAGS_LINK_TYPE));
+        cl.setLinkType(new SelectedTag("AVERAGE", HierarchicalClusterer.TAGS_LINK_TYPE));
         doCluster(path, cl);
 
     }
@@ -178,13 +178,13 @@ class ClusteringDemo {
     public void doHAK(String path) throws Exception {
         HAKClusterer cl = new HAKClusterer();
         //cl.setNumClusters(DataSource.read(path).size()-4);
-        cl.setNumClusters(3);
-        cl.setDebug(true);
-        cl.setMaxIteration(50);
+        cl.setNumClusters(clusterCount);
+        //cl.setDebug(true);
+        cl.setMaxIteration(15);
         //cl.setDistanceFunction(new ManhattanDistance());
-        cl.setLinkType(new SelectedTag("CENTROID", HierarchicalClusterer.TAGS_LINK_TYPE));
+        cl.setLinkType(new SelectedTag("SINGLE", HierarchicalClusterer.TAGS_LINK_TYPE));
         //cl.setSeed(3);
-        cl.setMinimumInstanceCount(5);
+        cl.setMinimumInstanceCount(2);
         doCluster(path, cl);
     }
 
@@ -237,15 +237,17 @@ class ClusteringDemo {
      * ClusteringDemo arff-file
      */
     public static void main(String[] args) throws Exception {
-        String path = "C:\\Program Files\\Weka-3-6\\data\\my.arff";
+        String path = "C:\\Program Files\\Weka-3-6\\data\\diabetes.arff";
         ClusteringDemo clusteringDemo = new ClusteringDemo();
         //clusteringDemo.ClusterWithSimpleKMeans(path);
         //clusteringDemo.classToCluster(path);
         clusteringDemo.doKMeans(path);
-        //clusteringDemo.doHierarchical(path);
-        //clusteringDemo.doHAK(path);
+        clusteringDemo.doHierarchical(path);
+        clusteringDemo.doHAK(path);
         //clusteringDemo.visualize(path);
         //clusteringDemo.visualizeClusterAssignments(path);
     }
+
+    private int clusterCount = 2;
 
 }

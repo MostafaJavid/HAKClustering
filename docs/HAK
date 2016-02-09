@@ -1,0 +1,260 @@
+% This file was created with JabRef 2.10.
+% Encoding: Cp1252
+
+
+@PhdThesis{Adderley2007,
+  Title                    = {The use of data mining techniques in crime trend analysis and offender profiling},
+  Author                   = {Adderley, Richard},
+  School                   = {University of Wolverhampton},
+  Year                     = {2007},
+  Owner                    = {Mostafa},
+  Timestamp                = {2016.02.08}
+}
+
+@InProceedings{Chen2003a,
+  Title                    = {COPLINK: Visualization for crime analysis},
+  Author                   = {Chen, Hsinchun and Atabakhsh, Homa and Petersen, Tim and Schroeder, Jenny and Buetow, Ty and Chaboya, Luis and O'Toole, Chris and Chau, Michael and Cushna, Tom and Casey, Dan and others},
+  Booktitle                = {Proceedings of the 2003 annual national conference on Digital government research},
+  Year                     = {2003},
+  Organization             = {Digital Government Society of North America},
+  Pages                    = {1--6},
+  Owner                    = {Mostafa},
+  Timestamp                = {2016.02.08}
+}
+
+@InProceedings{Chen2003,
+  Title                    = {Crime data mining: an overview and case studies},
+  Author                   = {Chen, Hsinchun and Chung, Wingyan and Qin, Yi and Chau, Michael and Xu, Jennifer Jie and Wang, Gang and Zheng, Rong and Atabakhsh, Homa},
+  Booktitle                = {Proceedings of the 2003 annual national conference on Digital government research},
+  Year                     = {2003},
+  Organization             = {Digital Government Society of North America},
+  Pages                    = {1--5},
+  Owner                    = {Mostafa},
+  Timestamp                = {2016.02.08}
+}
+
+@Article{Chen2004,
+  Title                    = {Crime data mining: a general framework and some examples},
+  Author                   = {Chen, Hsinchun and Chung, Wingyan and Xu, Jennifer Jie and Wang, Gang and Qin, Yi and Chau, Michael},
+  Journal                  = {Computer},
+  Year                     = {2004},
+  Number                   = {4},
+  Pages                    = {50--56},
+  Volume                   = {37},
+  Owner                    = {Mostafa},
+  Publisher                = {IEEE},
+  Timestamp                = {2016.02.08}
+}
+
+@Article{Eck2005,
+  Title                    = {Mapping crime: Understanding hotspots},
+  Author                   = {Eck, John and Chainey, Spencer and Cameron, James and Wilson, R},
+  Year                     = {2005},
+  Owner                    = {Mostafa},
+  Publisher                = {National Institute of Justice},
+  Timestamp                = {2016.02.08}
+}
+
+@InProceedings{Estivill-Castro2001,
+  Title                    = {Data mining techniques for autonomous exploration of large volumes of geo-referenced crime data},
+  Author                   = {Estivill-Castro, Vladimir and Lee, Ickjai},
+  Booktitle                = {Proc. of the 6th International Conference on Geocomputation},
+  Year                     = {2001},
+  Organization             = {Citeseer},
+  Pages                    = {24--26},
+  Owner                    = {Mostafa},
+  Timestamp                = {2016.02.08}
+}
+
+@Article{Guo2009,
+  Title                    = {12 Multivariate Spatial Clustering and Geovisualization},
+  Author                   = {Guo, Diansheng},
+  Journal                  = {Geographic Data Mining and Knowledge Discovery},
+  Year                     = {2009},
+  Pages                    = {325},
+  Owner                    = {Mostafa},
+  Publisher                = {CRC Press},
+  Timestamp                = {2016.02.08}
+}
+
+@InProceedings{Han1997,
+  Title                    = {GeoMiner: a system prototype for spatial data mining},
+  Author                   = {Han, Jaiwei and Koperski, Krzysztof and Stefanovic, Nebojsa},
+  Booktitle                = {ACM SIGMOD Record},
+  Year                     = {1997},
+  Number                   = {2},
+  Organization             = {ACM},
+  Pages                    = {553--556},
+  Volume                   = {26},
+  Owner                    = {Mostafa},
+  Timestamp                = {2016.02.08}
+}
+
+@Article{Helmstetter2002,
+  Title                    = {Subcritical and supercritical regimes in epidemic models of earthquake aftershocks},
+  Author                   = {Helmstetter, Agnes and Sornette, Didier},
+  Journal                  = {Journal of Geophysical Research: Solid Earth},
+  Year                     = {2002},
+  Number                   = {B10},
+  Volume                   = {107},
+
+  __markedentry            = {[Mostafa:]},
+  Owner                    = {Mostafa},
+  Publisher                = {Wiley Online Library},
+  Timestamp                = {2016.02.08}
+}
+
+@Article{Kagan1987,
+  Title                    = {Statistical short-term earthquake prediction},
+  Author                   = {Kagan, Yan Y and Knopoff, L},
+  Journal                  = {Science},
+  Year                     = {1987},
+  Number                   = {4808},
+  Pages                    = {1563--1567},
+  Volume                   = {236},
+
+  __markedentry            = {[Mostafa:6]},
+  Owner                    = {Mostafa},
+  Publisher                = {Citeseer},
+  Timestamp                = {2016.02.08}
+}
+
+@Article{Kelvin2008,
+  Title                    = {Introduction of STEM: Space-Time-Event Model for crime pattern analysis},
+  Author                   = {Kelvin, Leong and Stephen, Chan and Vincent, Ng and Simon, Shiu},
+  Journal                  = {Asian journal of information technology},
+  Year                     = {2008},
+  Volume                   = {17},
+  Owner                    = {Mostafa},
+  Timestamp                = {2016.02.08}
+}
+
+@Article{Leong2009,
+  Title                    = {An Application of the Dynamic Pattern Analysis Framework to the Analysis of Spatial-Temporal Crime Relationships.},
+  Author                   = {Leong, Kelvin and Li, Junco and Chan, Stephen Chi-fai and Ng, Vincent TY},
+  Journal                  = {J. UCS},
+  Year                     = {2009},
+  Number                   = {9},
+  Pages                    = {1852--1870},
+  Volume                   = {15},
+  Owner                    = {Mostafa},
+  Timestamp                = {2016.02.08}
+}
+
+@Article{Levine2004,
+  Title                    = {The CrimeStat program: Characteristics, use and audience},
+  Author                   = {Levine, Ned},
+  Journal                  = {Geographical Analysis. Forthcoming},
+  Year                     = {2004},
+  Owner                    = {Mostafa},
+  Publisher                = {Citeseer},
+  Timestamp                = {2016.02.08}
+}
+
+@Article{Miller2001,
+  Title                    = {Spatial clustering methods in data mining: a survey},
+  Author                   = {Miller, H and Han, J},
+  Journal                  = {Geographic data mining and knowledge discovery, Taylor and Francis},
+  Year                     = {2001},
+  Owner                    = {Mostafa},
+  Timestamp                = {2016.02.08}
+}
+
+@Misc{Miller2001a,
+  Title                    = {Geographic Data Mining and Knowledge Discovery: an overview. Geographic Data Mining and Knowledge Discovery pp. 3-32},
+
+  Author                   = {Miller, HJ and Han, J},
+  Year                     = {2001},
+  Owner                    = {Mostafa},
+  Publisher                = {Taylor \& Francis, London, UK},
+  Timestamp                = {2016.02.08}
+}
+
+@Article{Miller2008,
+  Title                    = {Geographic data mining and knowledge discovery},
+  Author                   = {Miller, Harvey J},
+  Journal                  = {Handbook of Geographic Information Science},
+  Year                     = {2008},
+  Pages                    = {352--366},
+  Owner                    = {Mostafa},
+  Publisher                = {Blackwell Publishing, Carlton, Australia},
+  Timestamp                = {2016.02.08}
+}
+
+@InProceedings{Mohan2008,
+  Title                    = {Should SDBMS support a join index?: a case study from CrimeStat},
+  Author                   = {Mohan, Pradeep and Wilson, Ronald E and Shekhar, Shashi and George, Betsy and Levine, Ned and Celik, Mete},
+  Booktitle                = {Proceedings of the 16th ACM SIGSPATIAL international conference on Advances in geographic information systems},
+  Year                     = {2008},
+  Organization             = {ACM},
+  Pages                    = {37},
+  Owner                    = {Mostafa},
+  Timestamp                = {2016.02.08}
+}
+
+@Article{Mostafa2003,
+  Title                    = {Crime mapping and spatial analysis},
+  Author                   = {Mostafa, A},
+  Journal                  = {International Institute For Geo-Information Science and Earth Observation Enschede},
+  Year                     = {2003},
+  Owner                    = {Mostafa},
+  Timestamp                = {2016.02.08}
+}
+
+@Article{Shekhar2003,
+  Title                    = {A unified approach to detecting spatial outliers},
+  Author                   = {Shekhar, Shashi and Lu, Chang-Tien and Zhang, Pusheng},
+  Journal                  = {GeoInformatica},
+  Year                     = {2003},
+  Number                   = {2},
+  Pages                    = {139--166},
+  Volume                   = {7},
+  Owner                    = {Mostafa},
+  Publisher                = {Springer},
+  Timestamp                = {2016.02.08}
+}
+
+@InProceedings{Silva2004,
+  Title                    = {Visualization of Geospatial Data by Component Planes and U-matrix.},
+  Author                   = {da Silva, Marcos Aur{\'e}lio Santos and Monteiro, Ant{\^o}nio Miguel Vieira and Medeiros, Jos{\'e} Sime{\~a}o},
+  Booktitle                = {GeoInfo},
+  Year                     = {2004},
+  Organization             = {Citeseer},
+  Pages                    = {75--90},
+  Owner                    = {Mostafa},
+  Timestamp                = {2016.02.08}
+}
+
+@InProceedings{Thongtae2008,
+  Title                    = {An analysis of data mining applications in crime domain},
+  Author                   = {Thongtae, P and Srisuk, S},
+  Booktitle                = {Computer and Information Technology Workshops, 2008. CIT Workshops 2008. IEEE 8th International Conference on},
+  Year                     = {2008},
+  Organization             = {IEEE},
+  Pages                    = {122--126},
+  Owner                    = {Mostafa},
+  Timestamp                = {2016.02.08}
+}
+
+@Article{Wyland2008,
+  Title                    = {Design and Implementation of a Spatial Data Engine and Visualization Interface for a Crime Information System},
+  Author                   = {Wyland, Michael},
+  Journal                  = {Final report for the course project of CS6604 Spatial Database Management},
+  Year                     = {2008},
+  Owner                    = {Mostafa},
+  Timestamp                = {2016.02.08}
+}
+
+@Article{Xiang2005,
+  Title                    = {Visualizing criminal relationships: Comparison of a hyperbolic tree and a hierarchical list},
+  Author                   = {Xiang, Yang and Chau, Michael and Atabakhsh, Homa and Chen, Hsinchun},
+  Journal                  = {Decision Support Systems},
+  Year                     = {2005},
+  Number                   = {1},
+  Pages                    = {69--83},
+  Volume                   = {41},
+  Owner                    = {Mostafa},
+  Publisher                = {Elsevier},
+  Timestamp                = {2016.02.08}
+}
+

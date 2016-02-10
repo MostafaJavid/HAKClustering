@@ -158,6 +158,7 @@ class ClusteringDemo {
 
     public void doKMeans(String path) throws Exception {
         SimpleKMeans cl = new SimpleKMeans();
+        cl.setPreserveInstancesOrder(true);
         cl.setNumClusters(clusterCount);
         //cl.setSeed(10);
         doCluster(path, cl);
@@ -177,6 +178,7 @@ class ClusteringDemo {
 
     public void doHAK(String path) throws Exception {
         HAKClusterer cl = new HAKClusterer();
+        cl.setPreserveInstancesOrder(true);
         //cl.setNumClusters(DataSource.read(path).size()-4);
         cl.setNumClusters(clusterCount);
         //cl.setDebug(true);

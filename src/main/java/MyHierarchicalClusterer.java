@@ -1,22 +1,22 @@
 ///*
-// *   This program is free software: you can redistribute it and/or modify
-// *   it under the terms of the GNU General Public License as published by
-// *   the Free Software Foundation, either version 3 of the License, or
-// *   (at your option) any later version.
-// *
-// *   This program is distributed in the hope that it will be useful,
-// *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-// *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// *   GNU General Public License for more details.
-// *
-// *   You should have received a copy of the GNU General Public License
-// *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-// */
+//*   This program is free software: you can redistribute it and/or modify
+//*   it under the terms of the GNU General Public License as published by
+//*   the Free Software Foundation, either version 3 of the License, or
+//*   (at your option) any later version.
+//*
+//*   This program is distributed in the hope that it will be useful,
+//*   but WITHOUT ANY WARRANTY; without even the implied warranty of
+//*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//*   GNU General Public License for more details.
+//*
+//*   You should have received a copy of the GNU General Public License
+//*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//*/
 //
 ///*
-// * HierarchicalClusterer.java
-// * Copyright (C) 2009-2012 University of Waikato, Hamilton, New Zealand
-// */
+//* HierarchicalClusterer.java
+//* Copyright (C) 2009-2012 University of Waikato, Hamilton, New Zealand
+//*/
 //
 //package weka.clusterers;
 //
@@ -40,51 +40,51 @@
 //import weka.core.Utils;
 //
 ///**
-// * <!-- globalinfo-start --> Hierarchical clustering class. Implements a number
-// * of classic hierarchical clustering methods. <!-- globalinfo-end -->
-// *
-// * <!-- options-start --> Valid options are:
-// * <p/>
-// *
-// * <pre>
-// * -N
-// *  number of clusters
-// * </pre>
-// *
-// *
-// * <pre>
-// * -L
-// *  Link type (Single, Complete, Average, Mean, Centroid, Ward, Adjusted complete, Neighbor Joining)
-// *  [SINGLE|COMPLETE|AVERAGE|MEAN|CENTROID|WARD|ADJCOMPLETE|NEIGHBOR_JOINING]
-// * </pre>
-// *
-// * <pre>
-// * -A
-// * Distance function to use. (default: weka.core.EuclideanDistance)
-// * </pre>
-// *
-// * <pre>
-// * -P
-// * Print hierarchy in Newick format, which can be used for display in other programs.
-// * </pre>
-// *
-// * <pre>
-// * -D
-// * If set, classifier is run in debug mode and may output additional info to the console.
-// * </pre>
-// *
-// * <pre>
-// * -B
-// * \If set, distance is interpreted as branch length, otherwise it is node height.
-// * </pre>
-// *
-// * <!-- options-end -->
-// *
-// *
-// * @author Remco Bouckaert (rrb@xm.co.nz, remco@cs.waikato.ac.nz)
-// * @author Eibe Frank (eibe@cs.waikato.ac.nz)
-// * @version $Revision: 11329 $
-// */
+//* <!-- globalinfo-start --> Hierarchical clustering class. Implements a number
+//* of classic hierarchical clustering methods. <!-- globalinfo-end -->
+//*
+//* <!-- options-start --> Valid options are:
+//* <p/>
+//*
+//* <pre>
+//* -N
+//*  number of clusters
+//* </pre>
+//*
+//*
+//* <pre>
+//* -L
+//*  Link type (Single, Complete, Average, Mean, Centroid, Ward, Adjusted complete, Neighbor Joining)
+//*  [SINGLE|COMPLETE|AVERAGE|MEAN|CENTROID|WARD|ADJCOMPLETE|NEIGHBOR_JOINING]
+//* </pre>
+//*
+//* <pre>
+//* -A
+//* Distance function to use. (default: weka.core.EuclideanDistance)
+//* </pre>
+//*
+//* <pre>
+//* -P
+//* Print hierarchy in Newick format, which can be used for display in other programs.
+//* </pre>
+//*
+//* <pre>
+//* -D
+//* If set, classifier is run in debug mode and may output additional info to the console.
+//* </pre>
+//*
+//* <pre>
+//* -B
+//* \If set, distance is interpreted as branch length, otherwise it is node height.
+//* </pre>
+//*
+//* <!-- options-end -->
+//*
+//*
+//* @author Remco Bouckaert (rrb@xm.co.nz, remco@cs.waikato.ac.nz)
+//* @author Eibe Frank (eibe@cs.waikato.ac.nz)
+//* @version $Revision: 11329 $
+//*/
 //public class HierarchicalClusterer extends AbstractClusterer implements
 //        OptionHandler, Drawable {
 //    private static final long serialVersionUID = 1L;

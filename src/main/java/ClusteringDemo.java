@@ -244,7 +244,7 @@ class ClusteringDemo {
         //clusteringDemo.ClusterWithSimpleKMeans(path);
         //clusteringDemo.classToCluster(path);
         clusteringDemo.doKMeans(path);
-        clusteringDemo.doHierarchical(path);
+        //clusteringDemo.doHierarchical(path);
         clusteringDemo.doHAK(path);
         //clusteringDemo.visualize(path);
         //clusteringDemo.visualizeClusterAssignments(path);

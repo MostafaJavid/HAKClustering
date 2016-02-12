@@ -2,7 +2,6 @@ import weka.core.DistanceFunction;
 import weka.core.Instance;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -12,8 +11,7 @@ public class CustomCluster {
     private int clusterId;
     private List<Instance> instanceList = new ArrayList<Instance>();
     private Instance centroid;
-    private double sigma=-1;
-    private double interClusterVariance=-1;
+    private double withinClusterDistance =-1;
 
     public CustomCluster(int id){
         this.clusterId = id;
@@ -48,39 +46,20 @@ public class CustomCluster {
     }
 
     public double computeDistanceFromCentroid(DistanceFunction m_DistanceFunction) {
-        if (sigma == -1 ) {
-            sigma = computeDistance(m_DistanceFunction, getCentroid());
-        }
-        return sigma;
-    }
-
-    private double computeDistance(DistanceFunction m_DistanceFunction,Instance centroid) {
-        double result = 0;
-        for (Instance instance : instanceList) {
-            result += Math.pow(m_DistanceFunction.distance(centroid, instance),2);
-        }
-         result /= getInstanceList().length;
-        return result;
-    }
-
-    public double computeCentroidDistanceFromOtherCentroids(DistanceFunction m_DistanceFunction, Instance[] centroids){
-        if (interClusterVariance == -1 ||  Double.isNaN(interClusterVariance)) {
-            double result = 0;
-            Instance myCentroid = getCentroid();
-            for (Instance centroid : centroids) {
-                if (myCentroid != centroid) {
-                    result += computeDistance(m_DistanceFunction, centroid);
-                }
+        if (withinClusterDistance == -1 ) {
+            withinClusterDistance = 0;
+            Instance centroid = getCentroid();
+            for (Instance instance : instanceList) {
+                withinClusterDistance += m_DistanceFunction.distance(centroid, instance);
             }
-            interClusterVariance = result / (centroids.length - 1);
+            withinClusterDistance /= getInstanceList().length;
         }
-        return interClusterVariance;
+        return withinClusterDistance;
     }
 
     private void resetComputes() {
         this.centroid = null;
-        this.sigma = -1;
-        this.interClusterVariance =-1;
+        this.withinClusterDistance = -1;
     }
 
     /////////////////////////PROPS////////////////////////////////////////////////////////////////

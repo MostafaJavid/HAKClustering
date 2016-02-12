@@ -19,7 +19,8 @@ public class CustomClusters {
     private Map<Integer,List<Integer>> clusterToDataAssignments = new HashMap<Integer, List<Integer>>();
     private Map<Integer,Double> silhouetteMap_data = new HashMap<Integer, Double>();
     private Map<Integer,Double> silhouetteMap_cluster = new HashMap<Integer, Double>();
-    double[][] allDistances;
+    double[][] betweenAllDataDistances;
+    double[][] betweenClusterCentroidDistances;
 
     //////Props////////////////////////////////////////////////////////////
     private List<CustomCluster> getCustomClusterList() {
@@ -37,7 +38,6 @@ public class CustomClusters {
     //////Constructor////////////////////////////////
     public CustomClusters(Instances data, AbstractClusterer clusterer, int minimumInstanceCount) {
         this.data = data;
-        this.allDistances = new double[data.size()][data.size()];
         this.minimumInstanceCount = minimumInstanceCount;
         String[] options = new String[2];
         options[0] = "-D";
@@ -58,6 +58,7 @@ public class CustomClusters {
             this.m_DistanceFunction.setInstances(simpleKMeans.getDistanceFunction().getInstances());
             this.customClusterList = computeClusters(simpleKMeans);
         }
+        initializeBetweenClusterDistances();
     }
 
     ////////Methods/////////////////////////////////////////
@@ -160,20 +161,28 @@ public class CustomClusters {
 
     public double computeBetweenClusterVariance() {
         double result = 0;
-        Instance[] centroids = getCentroids().toArray(new Instance[0]);
-        for (CustomCluster customCluster : getCustomClusterList()) {
-            result += customCluster.computeCentroidDistanceFromOtherCentroids(m_DistanceFunction, centroids);
+        for (int i = 0; i < customClusterList.size(); i++) {
+            result += computeCentroidDistanceFromOtherCentroids(i);
         }
         result /= getCustomClusterList().size();
         return result;
     }
 
+
+    public double computeCentroidDistanceFromOtherCentroids(int currentClusterIdx){
+        double result = 0;
+        for (int i = 0; i < customClusterList.size(); i++) {
+            result += betweenClusterCentroidDistances[currentClusterIdx][i];
+        }
+        result /= customClusterList.size();
+        return result;
+    }
+
     public double computeFisher() {
         double result = 0;
-        Instance[] centroids = getCentroids().toArray(new Instance[0]);
-        for (CustomCluster customCluster : getCustomClusterList()) {
-            double sigma = customCluster.computeDistanceFromCentroid(m_DistanceFunction);
-            double variance = customCluster.computeCentroidDistanceFromOtherCentroids(m_DistanceFunction, centroids);
+        for (int i = 0; i < customClusterList.size(); i++) {
+            double sigma = customClusterList.get(i).computeDistanceFromCentroid(m_DistanceFunction);
+            double variance = computeCentroidDistanceFromOtherCentroids(i);
             result += (variance / sigma);
         }
         result /= getCustomClusterList().size();
@@ -192,9 +201,58 @@ public class CustomClusters {
         return result;
     }
 
+    // the smallest Davies–Bouldin index is considered the best algorithm
+    public double computeDaviesBouldin(){
+        double result = 0;
+        for (int i = 0; i < customClusterList.size(); i++) {
+            double maxDiff = Double.MIN_VALUE;
+            for (int j = 0; j < customClusterList.size(); j++) {
+                if (i != j){
+                    double sigma_i = customClusterList.get(i).computeDistanceFromCentroid(m_DistanceFunction);
+                    double sigma_j = customClusterList.get(j).computeDistanceFromCentroid(m_DistanceFunction);
+                    double d_i_j = betweenClusterCentroidDistances[i][j]; //m_DistanceFunction.distance(customClusterList.get(i).getCentroid(),customClusterList.get(j).getCentroid());
+                    double diff = (sigma_i + sigma_j) / d_i_j;
+                    if (diff > maxDiff){
+                        maxDiff = diff;
+                    }
+                }
+            }
+            result += maxDiff;
+        }
+        result /= customClusterList.size();
+        return result;
+    }
+
+    // algorithms that produce clusters with high Dunn index are more desirable.
+    public double computeDunn(){
+        double result =0;
+        double minBetweenClusterCentroidDistance = Double.MAX_VALUE;
+        for (int i = 0; i < customClusterList.size(); i++) {
+            for (int j = 0; j < customClusterList.size(); j++) {
+                if (i!=j && betweenClusterCentroidDistances[i][j] < minBetweenClusterCentroidDistance){
+                    minBetweenClusterCentroidDistance = betweenClusterCentroidDistances[i][j];
+                }
+            }
+        }
+        double maxWithinCluster = Double.MIN_VALUE;
+        for (int i = 0; i < customClusterList.size(); i++) {
+            double temp = customClusterList.get(i).computeDistanceFromCentroid(m_DistanceFunction);
+            if (temp > maxWithinCluster){
+                maxWithinCluster = temp;
+            }
+        }
+        result = minBetweenClusterCentroidDistance / maxWithinCluster;
+        return result;
+    }
+
+    //The silhouette coefficient contrasts the average distance to elements in the same cluster with the average distance to elements in other clusters.
+    //Objects with a high silhouette value are considered well clustered, objects with a low value may be outliers.
+    //This index works well with k-means clustering, and is also used to determine the optimal number of clusters.
     public double computeSilhouette(){
-        initializeAllDistances();
+        initializeBetweenAllDataDistances();
         initializeClusterToDataAssignments();
+        silhouetteMap_data = new HashMap<Integer, Double>();
+        silhouetteMap_cluster = new HashMap<Integer, Double>();
         for (int i = 0; i < data.size(); i++) {
             if (dataToClustersAssignments.containsKey(i)){
                 int clusterNo = dataToClustersAssignments.get(i);
@@ -222,11 +280,11 @@ public class CustomClusters {
 
     private double get_b_i(int i, int clusterNo) {
         double b_i =Double.MAX_VALUE;
-        double temp = 0;
         for (Integer otherClusterNo : clusterToDataAssignments.keySet()) {
             if (clusterNo != otherClusterNo){
+                double temp = 0;
                 for (Integer otherClusterInstanceIdx : clusterToDataAssignments.get(otherClusterNo)) {
-                    temp += allDistances[i][otherClusterInstanceIdx];
+                    temp += betweenAllDataDistances[i][otherClusterInstanceIdx];
                 }
                 temp /= clusterToDataAssignments.get(otherClusterNo).size();
                 if (temp < b_i){
@@ -240,7 +298,7 @@ public class CustomClusters {
     private double get_a_i(int i, int clusterNo) {
         double a_i = 0;
         for (Integer instanceIdx : clusterToDataAssignments.get(clusterNo)) {
-            a_i += allDistances[i][instanceIdx];
+            a_i += betweenAllDataDistances[i][instanceIdx];
         }
         a_i /= (clusterToDataAssignments.get(clusterNo).size()-1);
         return a_i;
@@ -255,12 +313,27 @@ public class CustomClusters {
         }
     }
 
-    private void initializeAllDistances() {
+    private void initializeBetweenAllDataDistances() {
+        this.betweenAllDataDistances = new double[data.size()][data.size()];
         for (Integer id : dataToClustersAssignments.keySet()) {
             for (Integer other : dataToClustersAssignments.keySet()) {
-                if (id != other && allDistances[id][other] == 0){
-                    allDistances[id][other] = getDistanceFunction().distance(data.instance(id),data.instance(other));
-                    allDistances[other][id] = allDistances[id][other];
+                if (id != other && betweenAllDataDistances[id][other] == 0){
+                    betweenAllDataDistances[id][other] = getDistanceFunction().distance(data.instance(id),data.instance(other));
+                    betweenAllDataDistances[other][id] = betweenAllDataDistances[id][other];
+                }
+            }
+        }
+    }
+
+    private void initializeBetweenClusterDistances(){
+        betweenClusterCentroidDistances = new double[customClusterList.size()][customClusterList.size()];
+        for (int i = 0; i < customClusterList.size(); i++) {
+            for (int j = 0; j < customClusterList.size(); j++) {
+                if (i!=j){
+                    if (betweenClusterCentroidDistances[i][j] == 0){
+                        betweenClusterCentroidDistances[i][j] = m_DistanceFunction.distance(customClusterList.get(i).getCentroid(),customClusterList.get(j).getCentroid());
+                        betweenClusterCentroidDistances[j][i] = betweenClusterCentroidDistances[i][j];
+                    }
                 }
             }
         }
@@ -274,11 +347,13 @@ public class CustomClusters {
         for (CustomCluster customCluster : getCustomClusterList()) {
             sb.append("size of cluster ").append(customCluster.getClusterId()).append(":").append(customCluster.getClusterCount()).append("\n");
         }
-        sb.append("intra cluster variance:").append(computeWithinClusterVariance()).append("\n");
-        sb.append("inter cluster variance:").append(computeBetweenClusterVariance()).append("\n");
-        sb.append("Fisher:").append(computeFisher()).append("\n");
-        sb.append("total distance:").append(computeTotalMinimumDistance()).append("\n");
-        sb.append("silhouette:").append(computeSilhouette()).append("\n");
+//        sb.append("Average of within cluster variance():").append(computeWithinClusterVariance()).append("\n");
+//        sb.append("between cluster variance:").append(computeBetweenClusterVariance()).append("\n");
+//        sb.append("Fisher:").append(computeFisher()).append("\n");
+//        sb.append("total distance:").append(computeTotalMinimumDistance()).append("\n");
+        sb.append("Davies–Bouldin(smaller:").append(computeDaviesBouldin()).append("\n");
+        sb.append("Dunn(greater):").append(computeDunn()).append("\n");
+        sb.append("silhouette(greater):").append(computeSilhouette()).append("\n");
         return sb.toString();
     }
 

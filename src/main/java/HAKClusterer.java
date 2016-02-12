@@ -1,4 +1,3 @@
-import com.sun.tools.javac.util.*;
 import weka.clusterers.HierarchicalClusterer;
 import weka.clusterers.SimpleKMeans;
 import weka.core.Instances;

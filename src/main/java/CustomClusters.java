@@ -271,10 +271,15 @@ public class CustomClusters {
             silhouetteMap_cluster.put(clusterNo,clusterSilhouette);
         }
         double result = 0;
-        for (Double clusterSilhouette : silhouetteMap_cluster.values()) {
-            result += clusterSilhouette;
+        for (Double dataSilhouette : silhouetteMap_data.values()) {
+            result += dataSilhouette;
         }
-        result /= (silhouetteMap_cluster.values().size());
+        result /= (silhouetteMap_data.values().size());
+//        double result = 0;
+//        for (Double dataSilhouette : silhouetteMap_cluster.values()) {
+//            result += dataSilhouette;
+//        }
+//        result /= (silhouetteMap_cluster.values().size());
         return result;
     }
 
@@ -351,7 +356,7 @@ public class CustomClusters {
 //        sb.append("between cluster variance:").append(computeBetweenClusterVariance()).append("\n");
 //        sb.append("Fisher:").append(computeFisher()).append("\n");
 //        sb.append("total distance:").append(computeTotalMinimumDistance()).append("\n");
-        sb.append("Davies–Bouldin(smaller:").append(computeDaviesBouldin()).append("\n");
+        sb.append("Davies–Bouldin(smaller):").append(computeDaviesBouldin()).append("\n");
         sb.append("Dunn(greater):").append(computeDunn()).append("\n");
         sb.append("silhouette(greater):").append(computeSilhouette()).append("\n");
         return sb.toString();

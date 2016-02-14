@@ -721,7 +721,9 @@
 //            m_initialStartPoints = new Instances(m_ClusterCentroids);
 //        } else {
 //            if (m_initializationMethod == HAK) {
-//                m_ClusterCentroids = new Instances(getHakCentroids());
+//                for (Instance instance : getHakCentroids()) {
+//                    m_ClusterCentroids.add(instance);
+//                }
 //            }
 //            if (m_ClusterCentroids.numInstances() < m_NumClusters) {
 //                // random

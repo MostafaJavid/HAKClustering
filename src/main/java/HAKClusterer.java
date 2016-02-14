@@ -47,7 +47,7 @@ public class HAKClusterer extends SimpleKMeans {
     }
 
     private Instances getCentroids(Instances data, HierarchicalClusterer hierarchicalClusterer,int minimumInstanceCount) {
-        CustomClusters customClusters = new CustomClusters(data, hierarchicalClusterer, minimumInstanceCount);
+        CustomClusters customClusters = new CustomClusters(data, hierarchicalClusterer, minimumInstanceCount,null);
         //customClusters.filterClusters(getNumClusters());
         return customClusters.getCentroidsAsInstances();
         //List<CustomCluster> list = new ArrayList<CustomCluster>(Arrays.asList(customClusters.getCustomClusterArray()));

@@ -6,6 +6,7 @@
 import weka.clusterers.*;
 import weka.core.Instances;
 import weka.core.SelectedTag;
+import weka.core.converters.ConverterUtils;
 import weka.core.converters.ConverterUtils.DataSource;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
@@ -17,7 +18,9 @@ import weka.gui.visualize.VisualizePanel;
 import javax.swing.*;
 import java.awt.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 class ClusteringDemo {
 
@@ -156,15 +159,15 @@ class ClusteringDemo {
         jf.setVisible(true);
     }
 
-    public void doKMeans(String path) throws Exception {
+    public CustomClusters doKMeans(String path) throws Exception {
         SimpleKMeans cl = new SimpleKMeans();
         cl.setPreserveInstancesOrder(true);
         cl.setNumClusters(clusterCount);
         //cl.setSeed(10);
-        doCluster(path, cl);
+        return doCluster(path, cl);
     }
 
-    public void doHierarchical(String path) throws Exception {
+    public CustomClusters doHierarchical(String path) throws Exception {
         HierarchicalClusterer cl = new HierarchicalClusterer();
         //cl.setNumClusters(DataSource.read(path).size()-1);
         cl.setNumClusters(clusterCount);
@@ -172,56 +175,47 @@ class ClusteringDemo {
         //cl.setMaxIteration(500);
         //cl.setDistanceFunction(new ManhattanDistance());
         cl.setLinkType(new SelectedTag("AVERAGE", HierarchicalClusterer.TAGS_LINK_TYPE));
-        doCluster(path, cl);
+        return doCluster(path, cl);
 
     }
 
-    public void doHAK(String path) throws Exception {
+    public CustomClusters doHAK(String path) throws Exception {
         HAKClusterer cl = new HAKClusterer();
         cl.setPreserveInstancesOrder(true);
         //cl.setNumClusters(DataSource.read(path).size()-4);
         cl.setNumClusters(clusterCount);
         //cl.setDebug(true);
-        cl.setMaxIteration(15);
+        cl.setMaxIteration(100);
         //cl.setDistanceFunction(new ManhattanDistance());
-        cl.setLinkType(new SelectedTag("SINGLE", HierarchicalClusterer.TAGS_LINK_TYPE));
+        cl.setLinkType(new SelectedTag("AVERAGE", HierarchicalClusterer.TAGS_LINK_TYPE));
         //cl.setSeed(3);
         cl.setMinimumInstanceCount(2);
-        doCluster(path, cl);
+        return doCluster(path, cl);
     }
 
-    private void doCluster(String filename, AbstractClusterer cl) throws Exception {
-        ClusterEvaluation eval;
-        Instances data;
-        String[] options;
-        double logLikelyhood;
+    private CustomClusters doCluster(String filename, AbstractClusterer cl) throws Exception {
 
-        data = DataSource.read(filename);
-        data.setClassIndex(data.numAttributes() - 1);
 
-        // generate data for clusterer (w/o class)
-        Remove filter = new Remove();
-        filter.setAttributeIndices("" + (data.classIndex() + 1));
-        filter.setInputFormat(data);
-        Instances dataClusterer = Filter.useFilter(data, filter);
+//        String[] options;
+//        double logLikelyhood;
+
+        Instances data = readData(filename);
+        Instances dataClusterer = filterClassAttribute(data);
+
 
         // normal
-        System.out.println("\n--> normal");
-        options = new String[2];
-        options[0] = "-t";
-        options[1] = filename;
+//        System.out.println("\n--> normal");
+//        options = new String[2];
+//        options[0] = "-t";
+//        options[1] = filename;
         //System.out.println(ClusterEvaluation.evaluateClusterer(new SimpleKMeans(), options));
 
         // manual call
-        System.out.println("\n--> manual");
+        //System.out.println("\n--> manual");
         cl.buildClusterer(dataClusterer);
-        eval = new ClusterEvaluation();
-        eval.setClusterer(cl);
-        eval.evaluateClusterer(data);
-        System.out.println(eval.clusterResultsToString());
-
-        CustomClusters cc = new CustomClusters(dataClusterer, cl, 1);
-        System.out.println(cc.getResultString());
+        CustomClusters cc = new CustomClusters(dataClusterer, cl, 1,getEvaluator(cl,data));
+        //System.out.println(cc.getResultString());
+        return cc;
 
 
         // cross-validation for density based clusterers
@@ -234,20 +228,51 @@ class ClusteringDemo {
 //        System.out.println("log-likelyhood: " + logLikelyhood);
     }
 
+    private ClusterEvaluation getEvaluator(AbstractClusterer cl, Instances data) throws Exception {
+        ClusterEvaluation eval;
+        eval = new ClusterEvaluation();
+        eval.setClusterer(cl);
+        eval.evaluateClusterer(data);
+        //System.out.println(eval.clusterResultsToString());
+        return eval;
+    }
+
+    private Instances readData(String filename) throws Exception {
+        Instances data;
+        data = DataSource.read(filename);
+        data.setClassIndex(data.numAttributes() - 1);
+        return data;
+    }
+
+    private Instances filterClassAttribute(Instances data) throws Exception {
+        // generate data for clusterer (w/o class)
+        Remove filter = new Remove();
+        filter.setAttributeIndices("" + (data.classIndex() + 1));
+        filter.setInputFormat(data);
+        return Filter.useFilter(data, filter);
+    }
+
     /**
      * usage:
      * ClusteringDemo arff-file
      */
     public static void main(String[] args) throws Exception {
+        List<CustomClusters> results = new ArrayList<CustomClusters>();
         String path = "C:\\Program Files\\Weka-3-6\\data\\diabetes.arff";
         ClusteringDemo clusteringDemo = new ClusteringDemo();
         //clusteringDemo.ClusterWithSimpleKMeans(path);
         //clusteringDemo.classToCluster(path);
-        clusteringDemo.doKMeans(path);
+        results.add(clusteringDemo.doKMeans(path));
         //clusteringDemo.doHierarchical(path);
-        clusteringDemo.doHAK(path);
+        results.add(clusteringDemo.doHAK(path));
         //clusteringDemo.visualize(path);
         //clusteringDemo.visualizeClusterAssignments(path);
+
+        StringBuilder sb = new StringBuilder();
+        for (CustomClusters result : results) {
+            sb.append(result.getResultString());
+        }
+        System.out.println(sb.toString());
     }
 
     private int clusterCount = 2;

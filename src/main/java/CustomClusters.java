@@ -1,4 +1,5 @@
 import weka.clusterers.AbstractClusterer;
+import weka.clusterers.ClusterEvaluation;
 import weka.clusterers.HierarchicalClusterer;
 import weka.clusterers.SimpleKMeans;
 import weka.core.*;
@@ -21,6 +22,7 @@ public class CustomClusters {
     private Map<Integer,Double> silhouetteMap_cluster = new HashMap<Integer, Double>();
     double[][] betweenAllDataDistances;
     double[][] betweenClusterCentroidDistances;
+    ClusterEvaluation eval;
 
     //////Props////////////////////////////////////////////////////////////
     private List<CustomCluster> getCustomClusterList() {
@@ -36,7 +38,7 @@ public class CustomClusters {
     }
 
     //////Constructor////////////////////////////////
-    public CustomClusters(Instances data, AbstractClusterer clusterer, int minimumInstanceCount) {
+    public CustomClusters(Instances data, AbstractClusterer clusterer, int minimumInstanceCount,ClusterEvaluation eval) {
         this.data = data;
         this.minimumInstanceCount = minimumInstanceCount;
         String[] options = new String[2];
@@ -59,6 +61,7 @@ public class CustomClusters {
             this.customClusterList = computeClusters(simpleKMeans);
         }
         initializeBetweenClusterDistances();
+        this.eval = eval;
     }
 
     ////////Methods/////////////////////////////////////////
@@ -347,11 +350,13 @@ public class CustomClusters {
     /////////Build Result String//////////////////////////////////////////////
     public String getResultString() {
         StringBuilder sb = new StringBuilder();
-        //sb.append("******************************************************************************").append("\n");
+        sb.append("******************************************************************************").append("\n");
+        sb.append(clusterer.getClass().getCanonicalName()).append("\n");
         sb.append("centroids count:").append(getCustomClusterList().size()).append("\n");
         for (CustomCluster customCluster : getCustomClusterList()) {
             sb.append("size of cluster ").append(customCluster.getClusterId()).append(":").append(customCluster.getClusterCount()).append("\n");
         }
+        sb.append(getCustomResult(eval));
 //        sb.append("Average of within cluster variance():").append(computeWithinClusterVariance()).append("\n");
 //        sb.append("between cluster variance:").append(computeBetweenClusterVariance()).append("\n");
 //        sb.append("Fisher:").append(computeFisher()).append("\n");
@@ -359,6 +364,17 @@ public class CustomClusters {
         sb.append("Davies–Bouldin(smaller):").append(computeDaviesBouldin()).append("\n");
         sb.append("Dunn(greater):").append(computeDunn()).append("\n");
         sb.append("silhouette(greater):").append(computeSilhouette()).append("\n");
+        sb.append("\n");
+        return sb.toString();
+    }
+
+    public String getCustomResult(ClusterEvaluation eval){
+        StringBuilder sb = new StringBuilder();
+        sb.append("Incorrectly clustered instances :\t"
+                + eval.best[eval.getNumClusters()]
+                + "\t"
+                + (Utils.doubleToString((eval.best[eval.getNumClusters()] / eval.numInstances * 100.0), 8,
+                4)) + " %\n");
         return sb.toString();
     }
 

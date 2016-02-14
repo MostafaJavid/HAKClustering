@@ -5,8 +5,6 @@
 
 import weka.clusterers.*;
 import weka.core.Instances;
-import weka.core.SelectedTag;
-import weka.core.converters.ConverterUtils;
 import weka.core.converters.ConverterUtils.DataSource;
 import weka.filters.Filter;
 import weka.filters.unsupervised.attribute.Remove;
@@ -159,7 +157,7 @@ class ClusteringDemo {
         jf.setVisible(true);
     }
 
-    public CustomClusters doKMeans(String path) throws Exception {
+    public CustomClusters doKMeans(String path, int clusterCount) throws Exception {
         SimpleKMeans cl = new SimpleKMeans();
         cl.setPreserveInstancesOrder(true);
         cl.setNumClusters(clusterCount);
@@ -167,29 +165,29 @@ class ClusteringDemo {
         return doCluster(path, cl);
     }
 
-    public CustomClusters doHierarchical(String path) throws Exception {
+    public CustomClusters doHierarchical(String path, int clusterCount, LinkType linkType) throws Exception {
         HierarchicalClusterer cl = new HierarchicalClusterer();
         //cl.setNumClusters(DataSource.read(path).size()-1);
         cl.setNumClusters(clusterCount);
         //cl.setDebug(true);
         //cl.setMaxIteration(500);
         //cl.setDistanceFunction(new ManhattanDistance());
-        cl.setLinkType(new SelectedTag("AVERAGE", HierarchicalClusterer.TAGS_LINK_TYPE));
+        cl.setLinkType(linkType.getTag());
         return doCluster(path, cl);
 
     }
 
-    public CustomClusters doHAK(String path) throws Exception {
+    public CustomClusters doHAK(String path, int clusterCount, LinkType linkType, int maxIteration, int minInstanceCount) throws Exception {
         HAKClusterer cl = new HAKClusterer();
         cl.setPreserveInstancesOrder(true);
         //cl.setNumClusters(DataSource.read(path).size()-4);
         cl.setNumClusters(clusterCount);
         //cl.setDebug(true);
-        cl.setMaxIteration(100);
+        cl.setMaxIteration(maxIteration);
         //cl.setDistanceFunction(new ManhattanDistance());
-        cl.setLinkType(new SelectedTag("AVERAGE", HierarchicalClusterer.TAGS_LINK_TYPE));
+        cl.setLinkType(linkType.getTag());
         //cl.setSeed(3);
-        cl.setMinimumInstanceCount(2);
+        cl.setMinimumInstanceCount(minInstanceCount);
         return doCluster(path, cl);
     }
 
@@ -213,7 +211,7 @@ class ClusteringDemo {
         // manual call
         //System.out.println("\n--> manual");
         cl.buildClusterer(dataClusterer);
-        CustomClusters cc = new CustomClusters(dataClusterer, cl, 1,getEvaluator(cl,data));
+        CustomClusters cc = new CustomClusters(dataClusterer, cl, 1, getEvaluator(cl, data));
         //System.out.println(cc.getResultString());
         return cc;
 
@@ -257,24 +255,20 @@ class ClusteringDemo {
      * ClusteringDemo arff-file
      */
     public static void main(String[] args) throws Exception {
+        int clusterCount = 2;
         List<CustomClusters> results = new ArrayList<CustomClusters>();
         String path = "C:\\Program Files\\Weka-3-6\\data\\diabetes.arff";
         ClusteringDemo clusteringDemo = new ClusteringDemo();
         //clusteringDemo.ClusterWithSimpleKMeans(path);
         //clusteringDemo.classToCluster(path);
-        results.add(clusteringDemo.doKMeans(path));
-        //clusteringDemo.doHierarchical(path);
-        results.add(clusteringDemo.doHAK(path));
+        results.add(clusteringDemo.doKMeans(path, clusterCount));
+        //results.add(clusteringDemo.doHierarchical(path, clusterCount, LinkType.AVERAGE));
+        results.add(clusteringDemo.doHAK(path, clusterCount, LinkType.AVERAGE, 100, 2));
         //clusteringDemo.visualize(path);
         //clusteringDemo.visualizeClusterAssignments(path);
 
-        StringBuilder sb = new StringBuilder();
-        for (CustomClusters result : results) {
-            sb.append(result.getResultString());
-        }
-        System.out.println(sb.toString());
+        System.out.println(new ResultBeautifier(results).getResult());
     }
 
-    private int clusterCount = 2;
 
 }

@@ -25,7 +25,7 @@ public class CustomClusters {
     ClusterEvaluation eval;
 
     //////Props////////////////////////////////////////////////////////////
-    private List<CustomCluster> getCustomClusterList() {
+    public List<CustomCluster> getCustomClusterList() {
         return customClusterList;
     }
 
@@ -35,6 +35,14 @@ public class CustomClusters {
 
     public DistanceFunction getDistanceFunction() {
         return m_DistanceFunction;
+    }
+
+    public AbstractClusterer getClusterer() {
+        return clusterer;
+    }
+
+    public ClusterEvaluation getEval() {
+        return eval;
     }
 
     //////Constructor////////////////////////////////
@@ -347,35 +355,5 @@ public class CustomClusters {
         }
     }
 
-    /////////Build Result String//////////////////////////////////////////////
-    public String getResultString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("******************************************************************************").append("\n");
-        sb.append(clusterer.getClass().getCanonicalName()).append("\n");
-        sb.append("centroids count:").append(getCustomClusterList().size()).append("\n");
-        for (CustomCluster customCluster : getCustomClusterList()) {
-            sb.append("size of cluster ").append(customCluster.getClusterId()).append(":").append(customCluster.getClusterCount()).append("\n");
-        }
-        sb.append(getCustomResult(eval));
-//        sb.append("Average of within cluster variance():").append(computeWithinClusterVariance()).append("\n");
-//        sb.append("between cluster variance:").append(computeBetweenClusterVariance()).append("\n");
-//        sb.append("Fisher:").append(computeFisher()).append("\n");
-//        sb.append("total distance:").append(computeTotalMinimumDistance()).append("\n");
-        sb.append("Davies–Bouldin(smaller):").append(computeDaviesBouldin()).append("\n");
-        sb.append("Dunn(greater):").append(computeDunn()).append("\n");
-        sb.append("silhouette(greater):").append(computeSilhouette()).append("\n");
-        sb.append("\n");
-        return sb.toString();
-    }
-
-    public String getCustomResult(ClusterEvaluation eval){
-        StringBuilder sb = new StringBuilder();
-        sb.append("Incorrectly clustered instances :\t"
-                + eval.best[eval.getNumClusters()]
-                + "\t"
-                + (Utils.doubleToString((eval.best[eval.getNumClusters()] / eval.numInstances * 100.0), 8,
-                4)) + " %\n");
-        return sb.toString();
-    }
 
 }

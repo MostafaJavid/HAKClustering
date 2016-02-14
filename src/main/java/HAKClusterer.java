@@ -14,17 +14,20 @@ public class HAKClusterer extends SimpleKMeans {
     int m_nLinkType = 0;//SINGLE
     private int minimumInstanceCount = 2;
     Instances centroids;
+    CustomClusters middleClusters;
+    CustomClusters middleClusters2;
 
     @Override
     public void buildClusterer(Instances data) throws Exception {
         HierarchicalClusterer hierarchicalClusterer = getHierarchicalClusterer(getMaxIteration());
         hierarchicalClusterer.buildClusterer(data);
 
-        Instances middleInstances = getCentroids(data, hierarchicalClusterer,getMinimumInstanceCount());
+        middleClusters = new CustomClusters(data, hierarchicalClusterer, minimumInstanceCount, null);
+        Instances middleInstances = middleClusters.getCentroidsAsInstances();
         HierarchicalClusterer hierarchicalClusterer2 = getHierarchicalClusterer(middleInstances.size());
         hierarchicalClusterer2.buildClusterer(middleInstances);
-
-        centroids = getCentroids(middleInstances,hierarchicalClusterer2,1);
+        middleClusters2 = new CustomClusters(middleInstances, hierarchicalClusterer2, 1, null);
+        centroids = middleClusters2.getCentroidsAsInstances();
 
         super.setInitializationMethod(new SelectedTag("HAK", SimpleKMeans.TAGS_SELECTION));
         super.setHakCentroids(centroids);
@@ -46,14 +49,14 @@ public class HAKClusterer extends SimpleKMeans {
         return cl;
     }
 
-    private Instances getCentroids(Instances data, HierarchicalClusterer hierarchicalClusterer,int minimumInstanceCount) {
-        CustomClusters customClusters = new CustomClusters(data, hierarchicalClusterer, minimumInstanceCount,null);
-        //customClusters.filterClusters(getNumClusters());
-        return customClusters.getCentroidsAsInstances();
-        //List<CustomCluster> list = new ArrayList<CustomCluster>(Arrays.asList(customClusters.getCustomClusterArray()));
-        //list = filterClusters(list,getNumClusters());
-        //return CustomClusters.convertToInstances(list,data);
-    }
+//    private Instances getCentroids(Instances data, HierarchicalClusterer hierarchicalClusterer, int minimumInstanceCount) {
+//        middleClusters = new CustomClusters(data, hierarchicalClusterer, minimumInstanceCount, null);
+//        //customClusters.filterClusters(getNumClusters());
+//        return middleClusters.getCentroidsAsInstances();
+//        //List<CustomCluster> list = new ArrayList<CustomCluster>(Arrays.asList(customClusters.getCustomClusterArray()));
+//        //list = filterClusters(list,getNumClusters());
+//        //return CustomClusters.convertToInstances(list,data);
+//    }
 
 
 /////////////////////PROPS/////////////////////////////////////////////////////////////////////
@@ -82,5 +85,13 @@ public class HAKClusterer extends SimpleKMeans {
 
     public void setMinimumInstanceCount(int minimumInstanceCount) {
         this.minimumInstanceCount = minimumInstanceCount;
+    }
+
+    public CustomClusters getMiddleClusters() {
+        return middleClusters;
+    }
+
+    public CustomClusters getMiddleClusters2() {
+        return middleClusters2;
     }
 }

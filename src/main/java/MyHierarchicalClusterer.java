@@ -1,22 +1,22 @@
 ///*
-//*   This program is free software: you can redistribute it and/or modify
-//*   it under the terms of the GNU General Public License as published by
-//*   the Free Software Foundation, either version 3 of the License, or
-//*   (at your option) any later version.
-//*
-//*   This program is distributed in the hope that it will be useful,
-//*   but WITHOUT ANY WARRANTY; without even the implied warranty of
-//*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-//*   GNU General Public License for more details.
-//*
-//*   You should have received a copy of the GNU General Public License
-//*   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-//*/
+// *   This program is free software: you can redistribute it and/or modify
+// *   it under the terms of the GNU General Public License as published by
+// *   the Free Software Foundation, either version 3 of the License, or
+// *   (at your option) any later version.
+// *
+// *   This program is distributed in the hope that it will be useful,
+// *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+// *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// *   GNU General Public License for more details.
+// *
+// *   You should have received a copy of the GNU General Public License
+// *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
+// */
 //
 ///*
-//* HierarchicalClusterer.java
-//* Copyright (C) 2009-2012 University of Waikato, Hamilton, New Zealand
-//*/
+// * HierarchicalClusterer.java
+// * Copyright (C) 2009-2012 University of Waikato, Hamilton, New Zealand
+// */
 //
 //package weka.clusterers;
 //
@@ -40,51 +40,51 @@
 //import weka.core.Utils;
 //
 ///**
-//* <!-- globalinfo-start --> Hierarchical clustering class. Implements a number
-//* of classic hierarchical clustering methods. <!-- globalinfo-end -->
-//*
-//* <!-- options-start --> Valid options are:
-//* <p/>
-//*
-//* <pre>
-//* -N
-//*  number of clusters
-//* </pre>
-//*
-//*
-//* <pre>
-//* -L
-//*  Link type (Single, Complete, Average, Mean, Centroid, Ward, Adjusted complete, Neighbor Joining)
-//*  [SINGLE|COMPLETE|AVERAGE|MEAN|CENTROID|WARD|ADJCOMPLETE|NEIGHBOR_JOINING]
-//* </pre>
-//*
-//* <pre>
-//* -A
-//* Distance function to use. (default: weka.core.EuclideanDistance)
-//* </pre>
-//*
-//* <pre>
-//* -P
-//* Print hierarchy in Newick format, which can be used for display in other programs.
-//* </pre>
-//*
-//* <pre>
-//* -D
-//* If set, classifier is run in debug mode and may output additional info to the console.
-//* </pre>
-//*
-//* <pre>
-//* -B
-//* \If set, distance is interpreted as branch length, otherwise it is node height.
-//* </pre>
-//*
-//* <!-- options-end -->
-//*
-//*
-//* @author Remco Bouckaert (rrb@xm.co.nz, remco@cs.waikato.ac.nz)
-//* @author Eibe Frank (eibe@cs.waikato.ac.nz)
-//* @version $Revision: 11329 $
-//*/
+// * <!-- globalinfo-start --> Hierarchical clustering class. Implements a number
+// * of classic hierarchical clustering methods. <!-- globalinfo-end -->
+// *
+// * <!-- options-start --> Valid options are:
+// * <p/>
+// *
+// * <pre>
+// * -N
+// *  number of clusters
+// * </pre>
+// *
+// *
+// * <pre>
+// * -L
+// *  Link type (Single, Complete, Average, Mean, Centroid, Ward, Adjusted complete, Neighbor Joining)
+// *  [SINGLE|COMPLETE|AVERAGE|MEAN|CENTROID|WARD|ADJCOMPLETE|NEIGHBOR_JOINING]
+// * </pre>
+// *
+// * <pre>
+// * -A
+// * Distance function to use. (default: weka.core.EuclideanDistance)
+// * </pre>
+// *
+// * <pre>
+// * -P
+// * Print hierarchy in Newick format, which can be used for display in other programs.
+// * </pre>
+// *
+// * <pre>
+// * -D
+// * If set, classifier is run in debug mode and may output additional info to the console.
+// * </pre>
+// *
+// * <pre>
+// * -B
+// * \If set, distance is interpreted as branch length, otherwise it is node height.
+// * </pre>
+// *
+// * <!-- options-end -->
+// *
+// *
+// * @author Remco Bouckaert (rrb@xm.co.nz, remco@cs.waikato.ac.nz)
+// * @author Eibe Frank (eibe@cs.waikato.ac.nz)
+// * @version $Revision: 11329 $
+// */
 //public class HierarchicalClusterer extends AbstractClusterer implements
 //        OptionHandler, Drawable {
 //    private static final long serialVersionUID = 1L;
@@ -183,7 +183,18 @@
 //        this.maxIteration = maxIteration;
 //    }
 //
-//    boolean m_bPrintNewick = true;;
+//    double avgDistanceOfIterations = 0;
+//
+//    public double getAvgDistanceOfIterations() {
+//        return avgDistanceOfIterations;
+//    }
+//
+//    boolean m_bPrintNewick = true;
+//    double[][] fClusterDistance = null;
+//
+//    public double[][] getDistances() {
+//        return fClusterDistance;
+//    }
 //
 //    public boolean getPrintNewick() {
 //        return m_bPrintNewick;
@@ -522,7 +533,7 @@
 //        PriorityQueue<Tuple> queue = new PriorityQueue<Tuple>(nClusters * nClusters
 //                / 2, new TupleComparator());
 //        double[][] fDistance0 = new double[nClusters][nClusters];
-//        double[][] fClusterDistance = null;
+//        fClusterDistance = null;
 //        if (m_Debug) {
 //            fClusterDistance = new double[nClusters][nClusters];
 //        }
@@ -539,6 +550,7 @@
 //            }
 //        }
 //        long iteration = 0;
+//        avgDistanceOfIterations = 0;
 //        while (nClusters > m_nNumClusters && ++iteration <= maxIteration) {
 //            int iMin1 = -1;
 //            int iMin2 = -1;
@@ -560,6 +572,7 @@
 //                        }
 //                    }
 //                }
+//                avgDistanceOfIterations += fMinDistance;
 //                merge(iMin1, iMin2, fMinDistance, fMinDistance, nClusterID,
 //                        clusterNodes);
 //            } else {
@@ -572,6 +585,7 @@
 //                        .size() != t.m_nClusterSize2));
 //                iMin1 = t.m_iCluster1;
 //                iMin2 = t.m_iCluster2;
+//                avgDistanceOfIterations += t.m_fDist;
 //                merge(iMin1, iMin2, t.m_fDist, t.m_fDist, nClusterID, clusterNodes);
 //            }
 //            // merge clusters
@@ -594,6 +608,7 @@
 //
 //            nClusters--;
 //        }
+//        avgDistanceOfIterations /= iteration;
 //    } // doLinkClustering
 //
 //    protected void merge(int iMin1, int iMin2, double fDist1, double fDist2,

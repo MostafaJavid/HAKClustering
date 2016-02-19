@@ -263,7 +263,7 @@ class ClusteringDemo {
         //clusteringDemo.classToCluster(path);
         results.add(clusteringDemo.doKMeans(path, clusterCount));
         //results.add(clusteringDemo.doHierarchical(path, clusterCount, LinkType.AVERAGE));
-        results.add(clusteringDemo.doHAK(path, clusterCount, LinkType.AVERAGE, 100, 2));
+        results.add(clusteringDemo.doHAK(path, clusterCount, LinkType.CENTROID, 100, 2));
         //clusteringDemo.visualize(path);
         //clusteringDemo.visualizeClusterAssignments(path);
 

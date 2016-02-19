@@ -10,6 +10,7 @@ import java.util.*;
  * Created by Mostafa on 2/1/2016.
  */
 public class CustomClusters {
+    private String title;
     private Instances data;
     private AbstractClusterer clusterer;
     private int minimumInstanceCount;
@@ -46,7 +47,8 @@ public class CustomClusters {
     }
 
     //////Constructor////////////////////////////////
-    public CustomClusters(Instances data, AbstractClusterer clusterer, int minimumInstanceCount,ClusterEvaluation eval) {
+    public CustomClusters(String title,Instances data, AbstractClusterer clusterer, int minimumInstanceCount,ClusterEvaluation eval) {
+        this.title = title;
         this.data = data;
         this.minimumInstanceCount = minimumInstanceCount;
         String[] options = new String[2];
@@ -180,7 +182,7 @@ public class CustomClusters {
     }
 
 
-    public double computeCentroidDistanceFromOtherCentroids(int currentClusterIdx){
+    private double computeCentroidDistanceFromOtherCentroids(int currentClusterIdx){
         double result = 0;
         for (int i = 0; i < customClusterList.size(); i++) {
             result += betweenClusterCentroidDistances[currentClusterIdx][i];
@@ -355,5 +357,11 @@ public class CustomClusters {
         }
     }
 
+    public String getTitle() {
+        return title;
+    }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
 }

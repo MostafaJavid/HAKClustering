@@ -1,5 +1,6 @@
 import weka.clusterers.HierarchicalClusterer;
 import weka.clusterers.SimpleKMeans;
+import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.SelectedTag;
 
@@ -13,26 +14,54 @@ public class HAKClusterer extends SimpleKMeans {
     int maxIteration = Integer.MAX_VALUE;
     int m_nLinkType = 0;//SINGLE
     private int minimumInstanceCount = 2;
+    private int outlierFactor = 5;
+    private int outlierMinDense = 3;
     Instances centroids;
     CustomClusters middleClusters;
     CustomClusters middleClusters2;
+    Map<Integer,Integer> outliers;
 
     @Override
     public void buildClusterer(Instances data) throws Exception {
         HierarchicalClusterer hierarchicalClusterer = getHierarchicalClusterer(getMaxIteration());
         hierarchicalClusterer.buildClusterer(data);
+        outliers = getOutliers(hierarchicalClusterer);
 
-        middleClusters = new CustomClusters(data, hierarchicalClusterer, minimumInstanceCount, null);
+        middleClusters = new CustomClusters("middleClusters",data, hierarchicalClusterer, minimumInstanceCount, null);
         Instances middleInstances = middleClusters.getCentroidsAsInstances();
         HierarchicalClusterer hierarchicalClusterer2 = getHierarchicalClusterer(middleInstances.size());
         hierarchicalClusterer2.buildClusterer(middleInstances);
-        middleClusters2 = new CustomClusters(middleInstances, hierarchicalClusterer2, 1, null);
+        middleClusters2 = new CustomClusters("middleClusters2",middleInstances, hierarchicalClusterer2, 1, null);
         centroids = middleClusters2.getCentroidsAsInstances();
 
         super.setInitializationMethod(new SelectedTag("HAK", SimpleKMeans.TAGS_SELECTION));
         super.setHakCentroids(centroids);
+        List<Instance> outlierInstances = new ArrayList<Instance>();
+        for (Integer outlier : outliers.keySet()) {
+            outlierInstances.add(data.instance(outlier));
+        }
+        data.removeAll(outlierInstances);
         super.buildClusterer(data);
-        //super.get
+    }
+
+    private Map<Integer,Integer> getOutliers(HierarchicalClusterer hierarchicalClusterer) {
+        double[][] distances = hierarchicalClusterer.getDistances();
+        double avgDistance = hierarchicalClusterer.getAvgDistanceOfIterations();
+        double maxDistance = avgDistance * getOutlierFactor();
+        Map<Integer, Integer> outliers = new HashMap<Integer, Integer>();
+        for (int i = 0; i < distances.length; i++) {
+            int count = 0;
+            for (int j = 0; j < distances[i].length; j++) {
+                if (distances[i][j] < maxDistance) {
+                    count++;
+                }
+            }
+            if (count < getOutlierMinDense()) {
+                outliers.put(i, count);
+            }
+        }
+
+        return outliers;
     }
 
 //////////////////////METHODS////////////////////////////////////////////////////////////////////////
@@ -93,5 +122,25 @@ public class HAKClusterer extends SimpleKMeans {
 
     public CustomClusters getMiddleClusters2() {
         return middleClusters2;
+    }
+
+    public int getOutlierFactor() {
+        return outlierFactor;
+    }
+
+    public void setOutlierFactor(int outlierFactor) {
+        this.outlierFactor = outlierFactor;
+    }
+
+    public int getOutlierMinDense() {
+        return outlierMinDense;
+    }
+
+    public void setOutlierMinDense(int outlierMinDense) {
+        this.outlierMinDense = outlierMinDense;
+    }
+
+    public Map<Integer, Integer> getOutliers() {
+        return outliers;
     }
 }

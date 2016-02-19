@@ -7,6 +7,7 @@ import java.util.*;
  * Created by Mostafa on 2/14/2016.
  */
 public class ResultBeautifier {
+    Map<String, Double> cohisionMap = new HashMap<String, Double>();
     Map<String, Double> daviesBouldinMap = new HashMap<String, Double>();
     Map<String, Double> dunnMap = new HashMap<String, Double>();
     Map<String, Double> silhoetteMap = new HashMap<String, Double>();
@@ -23,6 +24,7 @@ public class ResultBeautifier {
             sb.append(getResultString(result));
         }
         sb.append("-------Comparison--------").append("\n");
+        getComparisonCoefficent(sb, "Cohision(smaller)", true, cohisionMap);
         getComparisonCoefficent(sb, "Davies-Bouldin(smaller)", true, daviesBouldinMap);
         getComparisonCoefficent(sb,"Dunn(greater)",false,dunnMap);
         getComparisonCoefficent(sb,"Silhoette(greater)",false,silhoetteMap);
@@ -48,7 +50,7 @@ public class ResultBeautifier {
     /////////Build Result String//////////////////////////////////////////////
     private String getResultString(CustomClusters customClusters) {
         StringBuilder sb = new StringBuilder();
-        String methodName = customClusters.getClusterer().getClass().getSimpleName();
+        String methodName = customClusters.getTitle(); //customClusters.getClusterer().getClass().getSimpleName();
         sb.append("******************************************************************************").append("\n");
         sb.append(methodName).append("\n");
         if (customClusters.getClusterer() instanceof HAKClusterer) {
@@ -59,7 +61,8 @@ public class ResultBeautifier {
             sb.append("size of cluster ").append(customCluster.getClusterId()).append(":").append(customCluster.getClusterCount()).append("\n");
         }
         sb.append(getSupervisedResult(customClusters.getEval()));
-//        sb.append("Average of within cluster variance():").append(computeWithinClusterVariance()).append("\n");
+        cohisionMap.put(methodName,customClusters.computeWithinClusterVariance());
+        sb.append("Average of within cluster variance():").append(cohisionMap.get(methodName)).append("\n");
 //        sb.append("between cluster variance:").append(computeBetweenClusterVariance()).append("\n");
 //        sb.append("Fisher:").append(computeFisher()).append("\n");
 //        sb.append("total distance:").append(computeTotalMinimumDistance()).append("\n");
@@ -78,6 +81,12 @@ public class ResultBeautifier {
 
         sb.append("link type: ").append(hakClusterer.getLinkType().getSelectedTag().getReadable()).append("\n");
         sb.append("max iteration: ").append(hakClusterer.getMaxIteration()).append("\n");
+        sb.append("outlier factor: ").append(hakClusterer.getOutlierFactor()).append("\n");
+        sb.append("outlier min dense count: ").append(hakClusterer.getOutlierMinDense()).append("\n");
+        sb.append("outliers: ").append("\n");
+        for (Map.Entry<Integer, Integer> outlier : hakClusterer.getOutliers().entrySet()) {
+            sb.append(outlier.getKey()).append(":").append(outlier.getValue()).append("\n");
+        }
         getMiddleCentroidString(sb, "middle HAK Centroids-1:", hakClusterer.getMiddleClusters());
         getMiddleCentroidString(sb, "middle HAK Centroids-2:", hakClusterer.getMiddleClusters2());
         return sb.toString();

@@ -157,15 +157,15 @@ class ClusteringDemo {
         jf.setVisible(true);
     }
 
-    public CustomClusters doKMeans(String path, int clusterCount) throws Exception {
+    public CustomClusters doKMeans(String title,String path, int clusterCount) throws Exception {
         SimpleKMeans cl = new SimpleKMeans();
         cl.setPreserveInstancesOrder(true);
         cl.setNumClusters(clusterCount);
         //cl.setSeed(10);
-        return doCluster(path, cl);
+        return doCluster(title,path, cl);
     }
 
-    public CustomClusters doHierarchical(String path, int clusterCount, LinkType linkType) throws Exception {
+    public CustomClusters doHierarchical(String title,String path, int clusterCount, LinkType linkType) throws Exception {
         HierarchicalClusterer cl = new HierarchicalClusterer();
         //cl.setNumClusters(DataSource.read(path).size()-1);
         cl.setNumClusters(clusterCount);
@@ -173,25 +173,27 @@ class ClusteringDemo {
         //cl.setMaxIteration(500);
         //cl.setDistanceFunction(new ManhattanDistance());
         cl.setLinkType(linkType.getTag());
-        return doCluster(path, cl);
+        return doCluster(title,path, cl);
 
     }
 
-    public CustomClusters doHAK(String path, int clusterCount, LinkType linkType, int maxIteration, int minInstanceCount) throws Exception {
+    public CustomClusters doHAK(String title,String path, int clusterCount, LinkType linkType, int maxIteration, int minInstanceCount,int outlierFactor,int outlierMinDense) throws Exception {
         HAKClusterer cl = new HAKClusterer();
         cl.setPreserveInstancesOrder(true);
         //cl.setNumClusters(DataSource.read(path).size()-4);
         cl.setNumClusters(clusterCount);
-        //cl.setDebug(true);
+        cl.setDebug(true);
         cl.setMaxIteration(maxIteration);
         //cl.setDistanceFunction(new ManhattanDistance());
         cl.setLinkType(linkType.getTag());
         //cl.setSeed(3);
         cl.setMinimumInstanceCount(minInstanceCount);
-        return doCluster(path, cl);
+        cl.setOutlierFactor(outlierFactor);
+        cl.setOutlierMinDense(outlierMinDense);
+        return doCluster(title,path, cl);
     }
 
-    private CustomClusters doCluster(String filename, AbstractClusterer cl) throws Exception {
+    private CustomClusters doCluster(String title,String filename, AbstractClusterer cl) throws Exception {
 
 
 //        String[] options;
@@ -211,7 +213,7 @@ class ClusteringDemo {
         // manual call
         //System.out.println("\n--> manual");
         cl.buildClusterer(dataClusterer);
-        CustomClusters cc = new CustomClusters(dataClusterer, cl, 1, getEvaluator(cl, data));
+        CustomClusters cc = new CustomClusters(title,dataClusterer, cl, 1, getEvaluator(cl, data));
         //System.out.println(cc.getResultString());
         return cc;
 
@@ -261,9 +263,9 @@ class ClusteringDemo {
         ClusteringDemo clusteringDemo = new ClusteringDemo();
         //clusteringDemo.ClusterWithSimpleKMeans(path);
         //clusteringDemo.classToCluster(path);
-        results.add(clusteringDemo.doKMeans(path, clusterCount));
-        //results.add(clusteringDemo.doHierarchical(path, clusterCount, LinkType.AVERAGE));
-        results.add(clusteringDemo.doHAK(path, clusterCount, LinkType.CENTROID, 100, 2));
+        results.add(clusteringDemo.doKMeans("KMeans",path, clusterCount));
+        //results.add(clusteringDemo.doHierarchical("Hierarchical",path, clusterCount, LinkType.AVERAGE));
+        results.add(clusteringDemo.doHAK("HAK",path, clusterCount, LinkType.CENTROID, 100, 2,5,3));
         //clusteringDemo.visualize(path);
         //clusteringDemo.visualizeClusterAssignments(path);
 

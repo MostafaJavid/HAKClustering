@@ -257,19 +257,30 @@ class ClusteringDemo {
      * ClusteringDemo arff-file
      */
     public static void main(String[] args) throws Exception {
-        int clusterCount = 2;
+        AVGResultBeautifier results = new AVGResultBeautifier();
+        results.add(getResult("iris",3));
+        results.add(getResult("diabetes",2));
+        results.add(getResult("glass",7));
+        results.add(getResult("ionosphere",2));
+        results.add(getResult("segment-challenge",7));
+        results.add(getResult("segment-test",7));//10
+        results.add(getResult("unbalanced",2));
+        System.out.println(results.printAllResults());
+    }
+
+    private static ResultBeautifier getResult(String fileName,int clusterCount) throws Exception {
         List<CustomClusters> results = new ArrayList<CustomClusters>();
-        String path = "C:\\Program Files\\Weka-3-6\\data\\diabetes.arff";
+        String path = "C:\\Program Files\\Weka-3-6\\data\\" + fileName+".arff";
         ClusteringDemo clusteringDemo = new ClusteringDemo();
         //clusteringDemo.ClusterWithSimpleKMeans(path);
         //clusteringDemo.classToCluster(path);
         results.add(clusteringDemo.doKMeans("KMeans",path, clusterCount));
         //results.add(clusteringDemo.doHierarchical("Hierarchical",path, clusterCount, LinkType.AVERAGE));
-        results.add(clusteringDemo.doHAK("HAK",path, clusterCount, LinkType.CENTROID, 100, 2,5,3));
+        results.add(clusteringDemo.doHAK("HAK",path, clusterCount, LinkType.CENTROID, 100, 2,10,3));
         //clusteringDemo.visualize(path);
         //clusteringDemo.visualizeClusterAssignments(path);
 
-        System.out.println(new ResultBeautifier(results).getResult());
+        return new ResultBeautifier(fileName,results);
     }
 
 

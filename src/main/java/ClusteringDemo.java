@@ -258,17 +258,17 @@ class ClusteringDemo {
      */
     public static void main(String[] args) throws Exception {
         AVGResultBeautifier results = new AVGResultBeautifier();
-        results.add(getResult("iris",3));
-        results.add(getResult("diabetes",2));
-        results.add(getResult("glass",7));
-        results.add(getResult("ionosphere",2));
-        results.add(getResult("segment-challenge",7));
-        results.add(getResult("segment-test",7));//10
-        results.add(getResult("unbalanced",2));
+        results.add(getResult("iris",3,LinkType.CENTROID,15,2,2));//150
+        results.add(getResult("diabetes",2,LinkType.CENTROID,15,5,3));//768
+        results.add(getResult("glass",7,LinkType.CENTROID,40,10,2));//214
+        results.add(getResult("ionosphere",2,LinkType.CENTROID,15,5,3));//351
+        results.add(getResult("segment-challenge",7,LinkType.CENTROID,100,2,2));//1500-100,10,3
+        results.add(getResult("segment-test",7,LinkType.CENTROID,100,10,3));//810,100,10,3
+        results.add(getResult("unbalanced",2,LinkType.CENTROID,30,4,3));//856
         System.out.println(results.printAllResults());
     }
 
-    private static ResultBeautifier getResult(String fileName,int clusterCount) throws Exception {
+    private static ResultBeautifier getResult(String fileName,int clusterCount,LinkType linkType,int maxIteration,int outlierFactor,int outlierMinDense) throws Exception {
         List<CustomClusters> results = new ArrayList<CustomClusters>();
         String path = "C:\\Program Files\\Weka-3-6\\data\\" + fileName+".arff";
         ClusteringDemo clusteringDemo = new ClusteringDemo();
@@ -276,7 +276,7 @@ class ClusteringDemo {
         //clusteringDemo.classToCluster(path);
         results.add(clusteringDemo.doKMeans("KMeans",path, clusterCount));
         //results.add(clusteringDemo.doHierarchical("Hierarchical",path, clusterCount, LinkType.AVERAGE));
-        results.add(clusteringDemo.doHAK("HAK",path, clusterCount, LinkType.CENTROID, 100, 2,10,3));
+        results.add(clusteringDemo.doHAK("HAK",path, clusterCount, linkType, maxIteration, 2,outlierFactor,outlierMinDense));
         //clusteringDemo.visualize(path);
         //clusteringDemo.visualizeClusterAssignments(path);
 

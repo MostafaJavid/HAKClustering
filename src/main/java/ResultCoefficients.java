@@ -1,5 +1,4 @@
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Mostafa on 2/23/2016.
@@ -10,18 +9,11 @@ public class ResultCoefficients {
     private  ResultCoefficient daviesBouldin = new ResultCoefficient("daviesBouldin(smaller)",true);
     private  ResultCoefficient dunn = new ResultCoefficient("dunn(greater)",false);
     private  ResultCoefficient silhouette = new ResultCoefficient("silhouette(greater)",false);
+    List<ResultCoefficients> allResults = new ArrayList<ResultCoefficients>();
 
     public ResultCoefficients(String title){
        this.title = title;
     }
-
-    public void countAnother(ResultCoefficients another){
-        this.cohision.countAnother(another.cohision);
-        this.daviesBouldin.countAnother(another.daviesBouldin);
-        this.dunn.countAnother(another.dunn);
-        this.silhouette.countAnother(another.silhouette);
-    }
-
 
     public void generateCountResults(StringBuilder sb){
         sb.append("-------").append("Count result").append("--------").append("\n");
@@ -43,7 +35,20 @@ public class ResultCoefficients {
         sb.toString();
     }
 
-    public void addResults(ResultCoefficients another){
+    public void applyOtherResults(ResultCoefficients another){
+        countAnother(another);
+        addResults(another);
+        allResults.add(another);
+    }
+
+    private void countAnother(ResultCoefficients another){
+        this.cohision.countAnother(another.cohision);
+        this.daviesBouldin.countAnother(another.daviesBouldin);
+        this.dunn.countAnother(another.dunn);
+        this.silhouette.countAnother(another.silhouette);
+    }
+
+    private void addResults(ResultCoefficients another){
         addResults(this.getCohision(), another.getCohision().entrySet());
         addResults(this.getDaviesBouldin(), another.getDaviesBouldin().entrySet());
         addResults(this.getDunn(), another.getDunn().entrySet());

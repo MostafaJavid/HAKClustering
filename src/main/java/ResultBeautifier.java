@@ -99,4 +99,7 @@ public class ResultBeautifier {
         return sb.toString();
     }
 
+    public String getTitle() {
+        return title;
+    }
 }

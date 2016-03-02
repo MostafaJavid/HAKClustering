@@ -258,13 +258,14 @@ class ClusteringDemo {
      */
     public static void main(String[] args) throws Exception {
         AVGResultBeautifier results = new AVGResultBeautifier();
-        results.add(getResult("iris",3,LinkType.CENTROID,15,2,2));//150
-        results.add(getResult("diabetes",2,LinkType.CENTROID,15,5,3));//768
-        results.add(getResult("glass",7,LinkType.CENTROID,40,10,2));//214
-        results.add(getResult("ionosphere",2,LinkType.CENTROID,15,5,3));//351
-        results.add(getResult("segment-challenge",7,LinkType.CENTROID,100,2,2));//1500-100,10,3
-        results.add(getResult("segment-test",7,LinkType.CENTROID,100,10,3));//810,100,10,3
-        results.add(getResult("unbalanced",2,LinkType.CENTROID,30,4,3));//856
+        LinkType linkType = LinkType.SINGLE;
+        results.add(getResult("iris",3,linkType,15,2,2));//150
+        results.add(getResult("diabetes",2,linkType,15,5,3));//768
+        results.add(getResult("glass",7,linkType,40,10,2));//214
+        results.add(getResult("ionosphere",2,linkType,15,5,3));//351
+        results.add(getResult("segment-challenge",7,linkType,100,2,2));//1500-100,10,3
+        results.add(getResult("segment-test",7,linkType,100,10,3));//810,100,10,3
+        results.add(getResult("unbalanced",2,linkType,30,4,3));//856
         System.out.println(results.printAllResults());
     }
 
@@ -275,8 +276,11 @@ class ClusteringDemo {
         //clusteringDemo.ClusterWithSimpleKMeans(path);
         //clusteringDemo.classToCluster(path);
         results.add(clusteringDemo.doKMeans("KMeans",path, clusterCount));
-        //results.add(clusteringDemo.doHierarchical("Hierarchical",path, clusterCount, LinkType.AVERAGE));
-        results.add(clusteringDemo.doHAK("HAK",path, clusterCount, linkType, maxIteration, 2,outlierFactor,outlierMinDense));
+//        results.add(clusteringDemo.doHierarchical("Hierarchical",path, clusterCount, LinkType.SINGLE));
+        results.add(clusteringDemo.doHAK("HAK-CENTROID",path, clusterCount, LinkType.CENTROID, maxIteration, 2,outlierFactor,outlierMinDense));
+        results.add(clusteringDemo.doHAK("HAK-SINGLE",path, clusterCount, LinkType.SINGLE, maxIteration, 2,outlierFactor,outlierMinDense));
+        results.add(clusteringDemo.doHAK("HAK-COMPLETE",path, clusterCount, LinkType.COMPLETE, maxIteration, 2,outlierFactor,outlierMinDense));
+        results.add(clusteringDemo.doHAK("HAK-AVERAGE",path, clusterCount, LinkType.AVERAGE, maxIteration, 2,outlierFactor,outlierMinDense));
         //clusteringDemo.visualize(path);
         //clusteringDemo.visualizeClusterAssignments(path);
 

@@ -36,12 +36,16 @@ public class HAKClusterer extends SimpleKMeans {
 
         super.setInitializationMethod(new SelectedTag("HAK", SimpleKMeans.TAGS_SELECTION));
         super.setHakCentroids(centroids);
+        removeOutlier(data);
+        super.buildClusterer(data);
+    }
+
+    public void removeOutlier(Instances data) {
         List<Instance> outlierInstances = new ArrayList<Instance>();
         for (Integer outlier : outliers.keySet()) {
             outlierInstances.add(data.instance(outlier));
         }
         data.removeAll(outlierInstances);
-        super.buildClusterer(data);
     }
 
     private Map<Integer,Integer> getOutliers(HierarchicalClusterer hierarchicalClusterer) {

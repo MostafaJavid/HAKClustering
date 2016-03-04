@@ -12,7 +12,7 @@ public class ResultBeautifier {
 
     List<CustomClusters> results;
 
-    public ResultBeautifier(String title,List<CustomClusters> results)  {
+    public ResultBeautifier(String title, List<CustomClusters> results) {
         this.title = title;
         this.results = results;
     }
@@ -41,18 +41,9 @@ public class ResultBeautifier {
         for (CustomCluster customCluster : customClusters.getCustomClusterList()) {
             sb.append("size of cluster ").append(customCluster.getClusterId()).append(":").append(customCluster.getClusterCount()).append("\n");
         }
-        sb.append(getSupervisedResult(customClusters.getEval()));
-        coefficients.getCohision().put(methodName, customClusters.computeWithinClusterVariance());
-        sb.append("Average of within cluster variance():").append(coefficients.getCohision().get(methodName)).append("\n");
-//        sb.append("between cluster variance:").append(computeBetweenClusterVariance()).append("\n");
-//        sb.append("Fisher:").append(computeFisher()).append("\n");
-//        sb.append("total distance:").append(computeTotalMinimumDistance()).append("\n");
-        coefficients.getDaviesBouldin().put(methodName, customClusters.computeDaviesBouldin());
-        sb.append("Davies–Bouldin(smaller):").append(coefficients.getDaviesBouldin().get(methodName)).append("\n");
-        coefficients.getDunn().put(methodName, customClusters.computeDunn());
-        sb.append("Dunn(greater):").append(coefficients.getDunn().get(methodName)).append("\n");
-        coefficients.getSilhouette().put(methodName, customClusters.computeSilhouette());
-        sb.append("silhouette(greater):").append(coefficients.getSilhouette().get(methodName)).append("\n");
+        sb.append(getSupervisedResult(customClusters.getEval(), customClusters));
+
+        coefficients.printCoefficientsResults(customClusters, sb, methodName);
         sb.append("\n");
         return sb.toString();
     }
@@ -65,9 +56,9 @@ public class ResultBeautifier {
         sb.append("outlier factor: ").append(hakClusterer.getOutlierFactor()).append("\n");
         sb.append("outlier min dense count: ").append(hakClusterer.getOutlierMinDense()).append("\n");
         sb.append("outliers count: ").append(hakClusterer.getOutliers().keySet().size()).append("\n");
-        for (Map.Entry<Integer, Integer> outlier : hakClusterer.getOutliers().entrySet()) {
-            sb.append(outlier.getKey()).append(":").append(outlier.getValue()).append("\n");
-        }
+//        for (Map.Entry<Integer, Integer> outlier : hakClusterer.getOutliers().entrySet()) {
+//            sb.append(outlier.getKey()).append(":").append(outlier.getValue()).append("\n");
+//        }
         getMiddleCentroidString(sb, "middle HAK Centroids-1:", hakClusterer.getMiddleClusters());
         getMiddleCentroidString(sb, "middle HAK Centroids-2:", hakClusterer.getMiddleClusters2());
         return sb.toString();
@@ -89,13 +80,14 @@ public class ResultBeautifier {
         }
     }
 
-    private String getSupervisedResult(ClusterEvaluation eval) {
+    private String getSupervisedResult(ClusterEvaluation eval, CustomClusters customClusters) {
         StringBuilder sb = new StringBuilder();
         sb.append("Incorrectly clustered instances :\t"
                 + eval.best[eval.getNumClusters()]
                 + "\t"
                 + (Utils.doubleToString((eval.best[eval.getNumClusters()] / eval.numInstances * 100.0), 8,
                 4)) + " %\n");
+        sb.append(eval.clusterResultsToString());
         return sb.toString();
     }
 

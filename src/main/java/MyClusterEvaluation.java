@@ -387,13 +387,15 @@
 //     * @throws Exception if something goes wrong
 //     */
 //    public double[] best;
+//    public int[][] counts;
 //    public int numInstances;
+//    public int[] clusterTotals;
 //    private void evaluateClustersWithRespectToClass(Instances inst,
 //                                                    String fileName) throws Exception {
 //
 //        int numClasses = inst.classAttribute().numValues();
-//        int[][] counts = new int[m_numClusters][numClasses];
-//        int[] clusterTotals = new int[m_numClusters];
+//        counts = new int[m_numClusters][numClasses];
+//        clusterTotals = new int[m_numClusters];
 //        best = new double[m_numClusters + 1];
 //        double[] current = new double[m_numClusters + 1];
 //        DataSource source = null;

@@ -1,3 +1,4 @@
+import weka.clusterers.ClusterEvaluation;
 import weka.core.DistanceFunction;
 import weka.core.Instance;
 
@@ -12,16 +13,20 @@ public class CustomCluster {
     private List<Instance> instanceList = new ArrayList<Instance>();
     private Instance centroid;
     private double withinClusterDistance =-1;
+    private SupervisedEvaluater supervisedEvaluater;
 
-    public CustomCluster(int id){
+    public CustomCluster(int id,ClusterEvaluation eval){
         this.clusterId = id;
-    }
-    public CustomCluster(int id,Instance[] instances){
-        this(id);
-        for (Instance instance : instances) {
-            addInstance(instance);
+        if (eval != null){
+            this.supervisedEvaluater = new SupervisedEvaluater(eval,id);
         }
     }
+//    public CustomCluster(int id,Instance[] instances){
+//        this(id);
+//        for (Instance instance : instances) {
+//            addInstance(instance);
+//        }
+//    }
 
     /////////////////////////Methods//////////////////////////////////////////////////////////////
     private Instance computeCentroid() {
@@ -84,5 +89,9 @@ public class CustomCluster {
 
     public Instance[] getInstanceList() {
         return this.instanceList.toArray(new Instance[0]);
+    }
+
+    public SupervisedEvaluater getSupervisedEvaluater() {
+        return supervisedEvaluater;
     }
 }

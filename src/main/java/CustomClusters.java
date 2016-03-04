@@ -17,10 +17,10 @@ public class CustomClusters {
     private List<CustomCluster> customClusterList;
     private Instances centroids;
     private DistanceFunction m_DistanceFunction = new EuclideanDistance();
-    private Map<Integer,Integer> dataToClustersAssignments = new HashMap<Integer, Integer>();
-    private Map<Integer,List<Integer>> clusterToDataAssignments = new HashMap<Integer, List<Integer>>();
-    private Map<Integer,Double> silhouetteMap_data = new HashMap<Integer, Double>();
-    private Map<Integer,Double> silhouetteMap_cluster = new HashMap<Integer, Double>();
+    private Map<Integer, Integer> dataToClustersAssignments = new HashMap<Integer, Integer>();
+    private Map<Integer, List<Integer>> clusterToDataAssignments = new HashMap<Integer, List<Integer>>();
+    private Map<Integer, Double> silhouetteMap_data = new HashMap<Integer, Double>();
+    private Map<Integer, Double> silhouetteMap_cluster = new HashMap<Integer, Double>();
     double[][] betweenAllDataDistances;
     double[][] betweenClusterCentroidDistances;
     ClusterEvaluation eval;
@@ -30,7 +30,7 @@ public class CustomClusters {
         return customClusterList;
     }
 
-    public  CustomCluster[] getCustomClusterArray() {
+    public CustomCluster[] getCustomClusterArray() {
         return getCustomClusterList().toArray(new CustomCluster[0]);
     }
 
@@ -47,7 +47,7 @@ public class CustomClusters {
     }
 
     //////Constructor////////////////////////////////
-    public CustomClusters(String title,Instances data, AbstractClusterer clusterer, int minimumInstanceCount,ClusterEvaluation eval) {
+    public CustomClusters(String title, Instances data, AbstractClusterer clusterer, int minimumInstanceCount, ClusterEvaluation eval) {
         this.title = title;
         this.data = data;
         this.minimumInstanceCount = minimumInstanceCount;
@@ -61,6 +61,7 @@ public class CustomClusters {
             e.printStackTrace();
         }
         this.clusterer = clusterer;
+        this.eval = eval;
         if (clusterer instanceof HierarchicalClusterer) {
             HierarchicalClusterer hierarchicalClusterer = (HierarchicalClusterer) clusterer;
             this.m_DistanceFunction.setInstances(hierarchicalClusterer.getDistanceFunction().getInstances());
@@ -71,7 +72,6 @@ public class CustomClusters {
             this.customClusterList = computeClusters(simpleKMeans);
         }
         initializeBetweenClusterDistances();
-        this.eval = eval;
     }
 
     ////////Methods/////////////////////////////////////////
@@ -95,7 +95,7 @@ public class CustomClusters {
         return centroids;
     }
 
-    private List<CustomCluster> sort(List<CustomCluster> list){
+    private List<CustomCluster> sort(List<CustomCluster> list) {
         Collections.sort(list, new Comparator<CustomCluster>() {
             @Override
             public int compare(CustomCluster o1, CustomCluster o2) {
@@ -116,7 +116,7 @@ public class CustomClusters {
 
     public Instances getCentroidsAsInstances() {
         if (centroids == null) {
-            centroids = convertToInstances(getCustomClusterList(),data);
+            centroids = convertToInstances(getCustomClusterList(), data);
         }
         return centroids;
     }
@@ -124,11 +124,11 @@ public class CustomClusters {
     private List<CustomCluster> computeClusters(HierarchicalClusterer hierarchicalClusterer) {
 
         List<CustomCluster> result = new ArrayList<CustomCluster>();
-        int clusterIndex=-1;
+        int clusterIndex = -1;
         for (int i = 0; i < hierarchicalClusterer.nClusterID.length; i++) {
             if (hierarchicalClusterer.nClusterID[i].size() >= minimumInstanceCount) {
                 clusterIndex++;
-                CustomCluster cluster = new CustomCluster(i);
+                CustomCluster cluster = new CustomCluster(i, eval);
                 for (Integer index : hierarchicalClusterer.nClusterID[i]) {
                     cluster.addInstance(data.instance(index));
                     dataToClustersAssignments.put(index, clusterIndex);
@@ -151,7 +151,7 @@ public class CustomClusters {
         List<CustomCluster> result = new ArrayList<CustomCluster>();
         for (int i = 0; i < kMeans.tempI.length; i++) {
             if (kMeans.tempI[i].size() >= minimumInstanceCount) {
-                CustomCluster cluster = new CustomCluster(i);
+                CustomCluster cluster = new CustomCluster(i, eval);
                 for (Instance instance : kMeans.tempI[i]) {
                     cluster.addInstance(instance);
                 }
@@ -181,8 +181,7 @@ public class CustomClusters {
         return result;
     }
 
-
-    private double computeCentroidDistanceFromOtherCentroids(int currentClusterIdx){
+    private double computeCentroidDistanceFromOtherCentroids(int currentClusterIdx) {
         double result = 0;
         for (int i = 0; i < customClusterList.size(); i++) {
             result += betweenClusterCentroidDistances[currentClusterIdx][i];
@@ -204,7 +203,7 @@ public class CustomClusters {
 
     public double computeTotalMinimumDistance() {
         double result = 0;
-        CustomCluster globalCluster = new CustomCluster(-1);
+        CustomCluster globalCluster = new CustomCluster(-1, null);
         for (CustomCluster customCluster : getCustomClusterList()) {
             double sigma = customCluster.computeDistanceFromCentroid(m_DistanceFunction);
             globalCluster.addInstance(customCluster.getCentroid());
@@ -215,17 +214,17 @@ public class CustomClusters {
     }
 
     // the smallest Davies–Bouldin index is considered the best algorithm
-    public double computeDaviesBouldin(){
+    public double computeDaviesBouldin() {
         double result = 0;
         for (int i = 0; i < customClusterList.size(); i++) {
             double maxDiff = Double.MIN_VALUE;
             for (int j = 0; j < customClusterList.size(); j++) {
-                if (i != j){
+                if (i != j) {
                     double sigma_i = customClusterList.get(i).computeDistanceFromCentroid(m_DistanceFunction);
                     double sigma_j = customClusterList.get(j).computeDistanceFromCentroid(m_DistanceFunction);
                     double d_i_j = betweenClusterCentroidDistances[i][j]; //m_DistanceFunction.distance(customClusterList.get(i).getCentroid(),customClusterList.get(j).getCentroid());
                     double diff = (sigma_i + sigma_j) / d_i_j;
-                    if (diff > maxDiff){
+                    if (diff > maxDiff) {
                         maxDiff = diff;
                     }
                 }
@@ -237,12 +236,12 @@ public class CustomClusters {
     }
 
     // algorithms that produce clusters with high Dunn index are more desirable.
-    public double computeDunn(){
-        double result =0;
+    public double computeDunn() {
+        double result = 0;
         double minBetweenClusterCentroidDistance = Double.MAX_VALUE;
         for (int i = 0; i < customClusterList.size(); i++) {
             for (int j = 0; j < customClusterList.size(); j++) {
-                if (i!=j && betweenClusterCentroidDistances[i][j] < minBetweenClusterCentroidDistance){
+                if (i != j && betweenClusterCentroidDistances[i][j] < minBetweenClusterCentroidDistance) {
                     minBetweenClusterCentroidDistance = betweenClusterCentroidDistances[i][j];
                 }
             }
@@ -250,7 +249,7 @@ public class CustomClusters {
         double maxWithinCluster = Double.MIN_VALUE;
         for (int i = 0; i < customClusterList.size(); i++) {
             double temp = customClusterList.get(i).computeDistanceFromCentroid(m_DistanceFunction);
-            if (temp > maxWithinCluster){
+            if (temp > maxWithinCluster) {
                 maxWithinCluster = temp;
             }
         }
@@ -261,27 +260,27 @@ public class CustomClusters {
     //The silhouette coefficient contrasts the average distance to elements in the same cluster with the average distance to elements in other clusters.
     //Objects with a high silhouette value are considered well clustered, objects with a low value may be outliers.
     //This index works well with k-means clustering, and is also used to determine the optimal number of clusters.
-    public double computeSilhouette(){
+    public double computeSilhouette() {
         initializeBetweenAllDataDistances();
         initializeClusterToDataAssignments();
         silhouetteMap_data = new HashMap<Integer, Double>();
         silhouetteMap_cluster = new HashMap<Integer, Double>();
         for (int i = 0; i < data.size(); i++) {
-            if (dataToClustersAssignments.containsKey(i)){
+            if (dataToClustersAssignments.containsKey(i)) {
                 int clusterNo = dataToClustersAssignments.get(i);
                 double a_i = get_a_i(i, clusterNo);
                 double b_i = get_b_i(i, clusterNo);
-                double s_i = (b_i - a_i) / (Math.max(a_i,b_i));
-                silhouetteMap_data.put(i,s_i);
+                double s_i = (b_i - a_i) / (Math.max(a_i, b_i));
+                silhouetteMap_data.put(i, s_i);
             }
         }
         for (Integer clusterNo : clusterToDataAssignments.keySet()) {
             double clusterSilhouette = 0;
-            for (Integer  instanceIdx : clusterToDataAssignments.get(clusterNo)) {
+            for (Integer instanceIdx : clusterToDataAssignments.get(clusterNo)) {
                 clusterSilhouette += silhouetteMap_data.get(instanceIdx);
             }
             clusterSilhouette /= clusterToDataAssignments.get(clusterNo).size();
-            silhouetteMap_cluster.put(clusterNo,clusterSilhouette);
+            silhouetteMap_cluster.put(clusterNo, clusterSilhouette);
         }
         double result = 0;
         for (Double dataSilhouette : silhouetteMap_data.values()) {
@@ -297,15 +296,15 @@ public class CustomClusters {
     }
 
     private double get_b_i(int i, int clusterNo) {
-        double b_i =Double.MAX_VALUE;
+        double b_i = Double.MAX_VALUE;
         for (Integer otherClusterNo : clusterToDataAssignments.keySet()) {
-            if (clusterNo != otherClusterNo){
+            if (clusterNo != otherClusterNo) {
                 double temp = 0;
                 for (Integer otherClusterInstanceIdx : clusterToDataAssignments.get(otherClusterNo)) {
                     temp += betweenAllDataDistances[i][otherClusterInstanceIdx];
                 }
                 temp /= clusterToDataAssignments.get(otherClusterNo).size();
-                if (temp < b_i){
+                if (temp < b_i) {
                     b_i = temp;
                 }
             }
@@ -318,14 +317,14 @@ public class CustomClusters {
         for (Integer instanceIdx : clusterToDataAssignments.get(clusterNo)) {
             a_i += betweenAllDataDistances[i][instanceIdx];
         }
-        a_i /= (clusterToDataAssignments.get(clusterNo).size()-1);
+        a_i /= (clusterToDataAssignments.get(clusterNo).size() - 1);
         return a_i;
     }
 
     private void initializeClusterToDataAssignments() {
         for (Map.Entry<Integer, Integer> entry : dataToClustersAssignments.entrySet()) {
-            if (!clusterToDataAssignments.containsKey(entry.getValue())){
-                clusterToDataAssignments.put(entry.getValue(),new ArrayList<Integer>());
+            if (!clusterToDataAssignments.containsKey(entry.getValue())) {
+                clusterToDataAssignments.put(entry.getValue(), new ArrayList<Integer>());
             }
             clusterToDataAssignments.get(entry.getValue()).add(entry.getKey());
         }
@@ -335,21 +334,21 @@ public class CustomClusters {
         this.betweenAllDataDistances = new double[data.size()][data.size()];
         for (Integer id : dataToClustersAssignments.keySet()) {
             for (Integer other : dataToClustersAssignments.keySet()) {
-                if (id != other && betweenAllDataDistances[id][other] == 0){
-                    betweenAllDataDistances[id][other] = getDistanceFunction().distance(data.instance(id),data.instance(other));
+                if (id != other && betweenAllDataDistances[id][other] == 0) {
+                    betweenAllDataDistances[id][other] = getDistanceFunction().distance(data.instance(id), data.instance(other));
                     betweenAllDataDistances[other][id] = betweenAllDataDistances[id][other];
                 }
             }
         }
     }
 
-    private void initializeBetweenClusterDistances(){
+    private void initializeBetweenClusterDistances() {
         betweenClusterCentroidDistances = new double[customClusterList.size()][customClusterList.size()];
         for (int i = 0; i < customClusterList.size(); i++) {
             for (int j = 0; j < customClusterList.size(); j++) {
-                if (i!=j){
-                    if (betweenClusterCentroidDistances[i][j] == 0){
-                        betweenClusterCentroidDistances[i][j] = m_DistanceFunction.distance(customClusterList.get(i).getCentroid(),customClusterList.get(j).getCentroid());
+                if (i != j) {
+                    if (betweenClusterCentroidDistances[i][j] == 0) {
+                        betweenClusterCentroidDistances[i][j] = m_DistanceFunction.distance(customClusterList.get(i).getCentroid(), customClusterList.get(j).getCentroid());
                         betweenClusterCentroidDistances[j][i] = betweenClusterCentroidDistances[i][j];
                     }
                 }
@@ -363,5 +362,103 @@ public class CustomClusters {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    ///////////////////////////////////////////////////////////////
+    //////////////Supervised Evaluation////////////////////////////
+    //////////////////////////////////////////////////////////////
+    public Double computeAccuracy_Macro() {
+        return new AverageComputer() {
+            @Override
+            public double getCoefficient(CustomCluster customCluster) {
+                return customCluster.getSupervisedEvaluater().getAccuracy();
+            }
+        }.compute();
+    }
+
+    public Double computeAccuracy_Micro() {
+        //this.accuracy = Double.valueOf((TP + TN) / all);
+        double result = 0;
+        int TP_all = 0;
+        int TN_all = 0;
+        for (CustomCluster customCluster : customClusterList) {
+            TP_all += customCluster.getSupervisedEvaluater().getTP();
+            TN_all += customCluster.getSupervisedEvaluater().getTN();
+        }
+        result = (TP_all + TN_all) / data.size();
+        return result;
+    }
+
+    public Double computePrecision() {
+        return new AverageComputer() {
+            @Override
+            public double getCoefficient(CustomCluster customCluster) {
+                return customCluster.getSupervisedEvaluater().getPrecision();
+            }
+        }.compute();
+    }
+
+    public Double computeRecall() {
+        return new AverageComputer() {
+            @Override
+            public double getCoefficient(CustomCluster customCluster) {
+                return customCluster.getSupervisedEvaluater().getRecall();
+            }
+        }.compute();
+    }
+
+    public Double computeFScore() {
+        return new AverageComputer() {
+            @Override
+            public double getCoefficient(CustomCluster customCluster) {
+                return customCluster.getSupervisedEvaluater().getfScore();
+            }
+        }.compute();
+    }
+
+    public Double computeErrorRate() {
+        return new AverageComputer() {
+            @Override
+            public double getCoefficient(CustomCluster customCluster) {
+                return customCluster.getSupervisedEvaluater().getErrorRate();
+            }
+        }.compute();
+    }
+
+    public Double computeSensitivity() {
+        return new AverageComputer() {
+            @Override
+            public double getCoefficient(CustomCluster customCluster) {
+                return customCluster.getSupervisedEvaluater().getSensitivity();
+            }
+        }.compute();
+    }
+
+    public Double computeSpecificity() {
+        return new AverageComputer() {
+            @Override
+            public double getCoefficient(CustomCluster customCluster) {
+                return customCluster.getSupervisedEvaluater().getSpecificity();
+            }
+        }.compute();
+    }
+
+    abstract class AverageComputer {
+        public double compute() {
+            double result = 0;
+            double size = customClusterList.size();
+            for (CustomCluster customCluster : customClusterList) {
+                double temp = getCoefficient(customCluster);
+                if (!Double.isNaN(temp))
+                    result += temp;
+                else
+                    size--;
+            }
+            result /= size;
+            return result;
+        }
+
+        public abstract double getCoefficient(CustomCluster customCluster);
+
     }
 }

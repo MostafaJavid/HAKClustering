@@ -4,6 +4,7 @@
 
 
 import weka.clusterers.*;
+import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 import weka.filters.Filter;
@@ -190,7 +191,13 @@ class ClusteringDemo {
         cl.setMinimumInstanceCount(minInstanceCount);
         cl.setOutlierFactor(outlierFactor);
         cl.setOutlierMinDense(outlierMinDense);
-        return doCluster(title,path, cl);
+
+        Instances data = readData(path);
+        Instances dataClusterer = filterClassAttribute(data);
+        cl.buildClusterer(dataClusterer);
+        cl.removeOutlier(data);
+        CustomClusters cc = new CustomClusters(title,dataClusterer, cl, 1, getEvaluator(cl, data));
+        return cc;
     }
 
     private CustomClusters doCluster(String title,String filename, AbstractClusterer cl) throws Exception {
@@ -213,6 +220,7 @@ class ClusteringDemo {
         // manual call
         //System.out.println("\n--> manual");
         cl.buildClusterer(dataClusterer);
+
         CustomClusters cc = new CustomClusters(title,dataClusterer, cl, 1, getEvaluator(cl, data));
         //System.out.println(cc.getResultString());
         return cc;
@@ -277,11 +285,11 @@ class ClusteringDemo {
         //clusteringDemo.classToCluster(path);
         results.add(clusteringDemo.doKMeans("KMeans",path, clusterCount));
 //        results.add(clusteringDemo.doHierarchical("Hierarchical",path, clusterCount, LinkType.SINGLE));
-        results.add(clusteringDemo.doHAK("HAK-CENTROID",path, clusterCount, LinkType.CENTROID, maxIteration, 2,outlierFactor,outlierMinDense));
+//        results.add(clusteringDemo.doHAK("HAK-CENTROID",path, clusterCount, LinkType.CENTROID, maxIteration, 2,outlierFactor,outlierMinDense));
         results.add(clusteringDemo.doHAK("HAK-SINGLE",path, clusterCount, LinkType.SINGLE, maxIteration, 2,outlierFactor,outlierMinDense));
-        results.add(clusteringDemo.doHAK("HAK-COMPLETE",path, clusterCount, LinkType.COMPLETE, maxIteration, 2,outlierFactor,outlierMinDense));
-        results.add(clusteringDemo.doHAK("HAK-AVERAGE",path, clusterCount, LinkType.AVERAGE, maxIteration, 2,outlierFactor,outlierMinDense));
-        //clusteringDemo.visualize(path);
+//        results.add(clusteringDemo.doHAK("HAK-COMPLETE",path, clusterCount, LinkType.COMPLETE, maxIteration, 2,outlierFactor,outlierMinDense));
+//        results.add(clusteringDemo.doHAK("HAK-AVERAGE",path, clusterCount, LinkType.AVERAGE, maxIteration, 2,outlierFactor,outlierMinDense));
+//        //clusteringDemo.visualize(path);
         //clusteringDemo.visualizeClusterAssignments(path);
 
         return new ResultBeautifier(fileName,results);

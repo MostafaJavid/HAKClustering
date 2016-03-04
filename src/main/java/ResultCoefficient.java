@@ -9,6 +9,7 @@ public class ResultCoefficient {
     Map<String,Integer> count = new HashMap<String, Integer>();
     private final boolean isAscending;
     String bestMethod;
+    StringBuilder coefficientSB = new StringBuilder();
 
     public ResultCoefficient(String title,boolean isAscending){
         this.title = title;
@@ -103,4 +104,6 @@ public class ResultCoefficient {
     public boolean containsKey(String key){
         return map.containsKey(key);
     }
+
+
 }

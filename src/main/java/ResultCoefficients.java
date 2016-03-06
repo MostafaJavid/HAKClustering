@@ -200,19 +200,19 @@ public class ResultCoefficients {
         generateHeader(specificitySB, specificity.getTitle(), keys);
     }
 
-    public void generateMatrix_row(Set<String> keys, String title) {
-        generateRow(keys, cohisionSB, title, cohision);
-        generateRow(keys, daviesBouldinSB, title, daviesBouldin);
-        generateRow(keys, dunnSB, title, dunn);
-        generateRow(keys, silhouetteSB, title, silhouette);
-        generateRow(keys, accuracy_MacroSB, title, accuracy_macro);
+    public void generateMatrix_row(Set<String> keys, String title,ResultCoefficients result) {
+        generateRow(keys, cohisionSB, title, result.cohision);
+        generateRow(keys, daviesBouldinSB, title, result.daviesBouldin);
+        generateRow(keys, dunnSB, title, result.dunn);
+        generateRow(keys, silhouetteSB, title, result.silhouette);
+        generateRow(keys, accuracy_MacroSB, title, result.accuracy_macro);
 //        generateRow(keys, accuracy_MicroSB, title, accuracy_micro);
-        generateRow(keys, precisionSB, title, precision);
-        generateRow(keys, recallSB, title, recall);
-        generateRow(keys, fScoreSB, title, fScore);
-        generateRow(keys, errorRateSB, title, errorRate);
-        generateRow(keys, sensitivitySB, title, sensitivity);
-        generateRow(keys, specificitySB, title, specificity);
+        generateRow(keys, precisionSB, title, result.precision);
+        generateRow(keys, recallSB, title, result.recall);
+        generateRow(keys, fScoreSB, title, result.fScore);
+        generateRow(keys, errorRateSB, title, result.errorRate);
+        generateRow(keys, sensitivitySB, title, result.sensitivity);
+        generateRow(keys, specificitySB, title, result.specificity);
     }
 
     private void generateHeader(StringBuilder sb, String methodName, Set<String> keys) {
@@ -223,12 +223,12 @@ public class ResultCoefficients {
         sb.append("\n");
     }
 
-    private void generateRow(Set<String> keys, StringBuilder cohisionSB, String methodName, ResultCoefficient rc) {
-        cohisionSB.append(String.format("%-30s", methodName)).append(":");
+    private void generateRow(Set<String> keys, StringBuilder sb, String methodName, ResultCoefficient rc) {
+        sb.append(String.format("%-30s", methodName)).append(":");
         for (String key : keys) {
-            cohisionSB.append(String.format("%-20s", rc.get(key))).append(" , ");
+            sb.append(String.format("%-20s", rc.get(key))).append(" , ");
         }
-        cohisionSB.append("\n");
+        sb.append("\n");
     }
 
 }

@@ -27,14 +27,14 @@ public class AVGResultBeautifier {
         return sb.toString();
     }
 
-    public void generateMatrixResults(StringBuilder sb){
+    public void generateMatrixResults(StringBuilder sb) {
         ResultCoefficients sample = results.get(0).coefficients;
         Set<String> keys = sample.getKeys();
-        sample.generateMatrix_header(keys);
+        final_sb.generateMatrix_header(keys);
         for (ResultBeautifier beautifier : results) {
-            beautifier.coefficients.generateMatrix_row(keys,beautifier.getTitle());
+            final_sb.generateMatrix_row(keys, beautifier.getTitle(), beautifier.coefficients);
         }
-        sample.generateMatrix_finalize(sb);
+        final_sb.generateMatrix_finalize(sb);
         sb.toString();
     }
 

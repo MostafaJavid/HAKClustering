@@ -224,9 +224,9 @@ public class ResultCoefficients {
     }
 
     private void generateRow(Set<String> keys, StringBuilder sb, String methodName, ResultCoefficient rc) {
-        sb.append(String.format("%-30s", methodName)).append(":");
+        sb.append(String.format("%-30s", methodName)).append("\t");
         for (String key : keys) {
-            sb.append(String.format("%-20s", rc.get(key))).append(" , ");
+            sb.append(String.format("%-20s", rc.get(key))).append("\t");
         }
         sb.append("\n");
     }

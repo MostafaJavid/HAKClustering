@@ -267,13 +267,13 @@ class ClusteringDemo {
     public static void main(String[] args) throws Exception {
         AVGResultBeautifier results = new AVGResultBeautifier();
         LinkType linkType = LinkType.SINGLE;
-        results.add(getResult("iris",3,linkType,15,2,2));//150
-        results.add(getResult("diabetes",2,linkType,76,7,2));//768
-        results.add(getResult("glass",7,linkType,40,10,2));//214
-        results.add(getResult("ionosphere",2,linkType,120,15,2));//351
-        results.add(getResult("segment-challenge",7,linkType,150,20,2));//1500-100,10,3
+        results.add(getResult("iris",3,linkType,15,10,2));//150
+        results.add(getResult("diabetes",2,linkType,76,10,2));//768
+        results.add(getResult("glass",7,linkType,21,10,2));//214
+        results.add(getResult("ionosphere",2,linkType,35,10,3));//351-f
+        results.add(getResult("segment-challenge",7,linkType,150,10,3));//1500-100,10,3-da
         results.add(getResult("segment-test",7,linkType,100,10,3));//810,100,10,3
-        results.add(getResult("unbalanced",2,linkType,30,4,3));//856
+//        results.add(getResult("unbalanced",2,linkType,85,10,3));//856
         System.out.println(results.printAllResults());
     }
 

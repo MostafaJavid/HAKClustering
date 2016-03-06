@@ -22,7 +22,8 @@ public class AVGResultBeautifier {
         final_sb.devideResults(results.size());
         generateMatrixResults(sb);
         final_sb.generateCountResults(sb);
-        final_sb.generateResults(sb);
+        if (results.size() == 1)
+            final_sb.generateResults(sb);
 
         return sb.toString();
     }

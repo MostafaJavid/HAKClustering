@@ -114,4 +114,26 @@ public class SupervisedEvaluater {
     public double getSpecificity() {
         return specificity;
     }
+
+    @Override
+    public String toString() {
+        return "SupervisedEvaluater{" +
+                "TP=" + TP +
+                ", TN=" + TN +
+                ", FP=" + FP +
+                ", FN=" + FN +
+                ", all=" + all +
+                ", P=" + P +
+                ", N=" + N +
+                ", P2=" + P2 +
+                ", N2=" + N2 +
+                ", precision=" + precision +
+                ", recall=" + recall +
+                ", fScore=" + fScore +
+                ", accuracy=" + accuracy +
+                ", errorRate=" + errorRate +
+                ", sensitivity=" + sensitivity +
+                ", specificity=" + specificity +
+                '}';
+    }
 }

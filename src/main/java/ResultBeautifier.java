@@ -87,7 +87,10 @@ public class ResultBeautifier {
                 + "\t"
                 + (Utils.doubleToString((eval.best[eval.getNumClusters()] / eval.numInstances * 100.0), 8,
                 4)) + " %\n");
-        sb.append(eval.clusterResultsToString());
+        //sb.append(eval.clusterResultsToString());
+        for (CustomCluster customCluster : customClusters.getCustomClusterList()) {
+            sb.append(customCluster.getSupervisedEvaluater()).append("\n");
+        }
         return sb.toString();
     }
 

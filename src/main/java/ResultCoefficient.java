@@ -5,40 +5,56 @@ import java.util.*;
  */
 public class ResultCoefficient {
     private final String title;
-    private final Map<String,Double> map = new HashMap<String, Double>();
-    Map<String,Integer> count = new HashMap<String, Integer>();
+    private final Map<String, Double> map = new HashMap<String, Double>();
+    Map<String, Integer> count = new HashMap<String, Integer>();
     private final boolean isAscending;
-    String bestMethod;
     StringBuilder coefficientSB = new StringBuilder();
 
-    public ResultCoefficient(String title,boolean isAscending){
+    public ResultCoefficient(String title, boolean isAscending) {
         this.title = title;
         this.isAscending = isAscending;
     }
 
-    public void countAnother(ResultCoefficient another){
+    public void countAnother(ResultCoefficient another) {
         for (Map.Entry<String, Integer> entry : another.count.entrySet()) {
             if (this.count.containsKey(entry.getKey())) {
                 this.count.put(entry.getKey(), entry.getValue() + this.count.get(entry.getKey()));
-            }
-            else
-            {
-                this.count.put(entry.getKey(),entry.getValue());
+            } else {
+                this.count.put(entry.getKey(), entry.getValue());
             }
         }
     }
 
     public void generateResult(StringBuilder sb) {
         List<Map.Entry<String, Double>> list = sort();
-        bestMethod = list.get(0).getKey();
-        for (Map.Entry<String, Double> entry : map.entrySet()) {
-            count.put(entry.getKey(),bestMethod.compareTo(entry.getKey()) == 0 ? 1 : 0);
+        boolean isAllEqual = isAllValuesEqual(list);
+        if (isAllEqual) {
+            for (Map.Entry<String, Double> entry : map.entrySet()) {
+                count.put(entry.getKey(), 0);
+            }
+        } else {
+            String bestMethod = list.get(0).getKey();
+            for (Map.Entry<String, Double> entry : map.entrySet()) {
+                count.put(entry.getKey(), bestMethod.compareTo(entry.getKey()) == 0 ? 1 : 0);
+            }
         }
         sb.append(getTitle()).append(":");
         for (Map.Entry<String, Double> entry : list) {
             sb.append(entry.getKey()).append("(").append(entry.getValue()).append(") - ");
         }
         sb.append("\n");
+    }
+
+    private boolean isAllValuesEqual(List<Map.Entry<String, Double>> list) {
+        if (list.size() > 0) {
+            Double first = list.get(0).getValue();
+            for (int i = 1; i < list.size(); i++) {
+                if (!first.equals(list.get(i).getValue())) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private List<Map.Entry<String, Double>> sort() {
@@ -53,7 +69,7 @@ public class ResultCoefficient {
         return list;
     }
 
-    public void generateCountResult(StringBuilder sb){
+    public void generateCountResult(StringBuilder sb) {
         List<Map.Entry<String, Integer>> list = sortCount();
         sb.append(getTitle()).append(":");
         for (Map.Entry<String, Integer> entry : list) {
@@ -73,15 +89,11 @@ public class ResultCoefficient {
         return list;
     }
 
-    public String getBestMethod(){
-        return bestMethod;
+    public void put(String methodName, Double value) {
+        map.put(methodName, value);
     }
 
-    public void put(String methodName,Double value){
-        map.put(methodName,value);
-    }
-
-    public Double get(String methodName){
+    public Double get(String methodName) {
         return map.get(methodName);
     }
 
@@ -89,7 +101,7 @@ public class ResultCoefficient {
         return title;
     }
 
-    public Set<Map.Entry<String,Double>> entrySet(){
+    public Set<Map.Entry<String, Double>> entrySet() {
         return map.entrySet();
     }
 
@@ -101,7 +113,7 @@ public class ResultCoefficient {
         return isAscending;
     }
 
-    public boolean containsKey(String key){
+    public boolean containsKey(String key) {
         return map.containsKey(key);
     }
 

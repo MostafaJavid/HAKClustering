@@ -267,7 +267,7 @@ class ClusteringDemo {
     public static void main(String[] args) throws Exception {
         AVGResultBeautifier results = new AVGResultBeautifier();
         LinkType linkType = LinkType.SINGLE;
-        results.add(getResult("iris",3,linkType,15,10,2));//150
+        results.add(getResult("iris",3,linkType,15,2,2));//150
         results.add(getResult("diabetes",2,linkType,76,10,2));//768
         results.add(getResult("glass",7,linkType,21,10,2));//214
         results.add(getResult("ionosphere",2,linkType,35,10,3));//351-f
